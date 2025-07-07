@@ -12,9 +12,11 @@ const CreateTask = () => {
         dueDate: '',
         status: 0, // Todo = 0
         priority: 1, // Medium = 1
-        projectId: projectId ? parseInt(projectId) : ''
+        projectId: projectId ? parseInt(projectId) : '',
+        assignedToUserId: ''
     });
     const [projects, setProjects] = useState([]);
+    const [teamMembers, setTeamMembers] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -29,6 +31,27 @@ const CreateTask = () => {
 
         loadProjects();
     }, []);
+
+    useEffect(() => {
+        const loadTeamMembers = async () => {
+            if (task.projectId) {
+                try {
+                    console.log('Loading team members for project:', task.projectId);
+                    const projectData = await projectService.getProject(task.projectId);
+                    console.log('Project data received:', projectData);
+                    console.log('Team members found:', projectData.teamMembers);
+                    setTeamMembers(projectData.teamMembers || []);
+                } catch (error) {
+                    console.error('Error loading team members:', error);
+                    setTeamMembers([]);
+                }
+            } else {
+                setTeamMembers([]);
+            }
+        };
+
+        loadTeamMembers();
+    }, [task.projectId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -54,7 +77,7 @@ const CreateTask = () => {
         let processedValue = value;
         
         // Convert numeric fields
-        if (name === 'projectId' || name === 'status' || name === 'priority') {
+        if (name === 'projectId' || name === 'status' || name === 'priority' || name === 'assignedToUserId') {
             processedValue = parseInt(value) || '';
         }
         
@@ -131,6 +154,36 @@ const CreateTask = () => {
                                                 value={task.dueDate}
                                                 onChange={handleChange}
                                             />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <div className="mb-3">
+                                            <label htmlFor="assignedToUserId" className="form-label">Asignar a</label>
+                                            <select
+                                                className="form-control"
+                                                id="assignedToUserId"
+                                                name="assignedToUserId"
+                                                value={task.assignedToUserId}
+                                                onChange={handleChange}
+                                                disabled={!task.projectId}
+                                            >
+                                                <option value="">Sin asignar</option>
+                                                {teamMembers.map(member => {
+                                                    console.log('Rendering member:', member);
+                                                    return (
+                                                        <option key={member.id} value={member.id}>
+                                                            {member.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                            {!task.projectId && (
+                                                <small className="form-text text-muted">
+                                                    Primero selecciona un proyecto para ver los miembros del equipo
+                                                </small>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

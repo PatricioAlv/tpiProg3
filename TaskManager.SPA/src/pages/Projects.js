@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Card, Button, Badge, Spinner, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { projectService } from '../services/apiService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -17,7 +17,31 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const Projects = () => {
+  const queryClient = useQueryClient();
+  const [deletingProjectId, setDeletingProjectId] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
   const { data: projects, isLoading, error } = useQuery('projects', projectService.getAllProjects);
+
+  const handleDeleteProject = async (projectId, projectName) => {
+    const confirmMessage = `¿Estás seguro de que quieres eliminar el proyecto "${projectName}"? Esta acción no se puede deshacer.`;
+    
+    if (window.confirm(confirmMessage)) {
+      setDeletingProjectId(projectId);
+      setDeleteError(null);
+      
+      try {
+        await projectService.deleteProject(projectId);
+        // Actualizar la lista de proyectos después de eliminar
+        queryClient.invalidateQueries('projects');
+        console.log(`Proyecto "${projectName}" eliminado exitosamente`);
+      } catch (error) {
+        console.error('Error al eliminar proyecto:', error);
+        setDeleteError(`Error al eliminar el proyecto: ${error.response?.data?.message || error.message}`);
+      } finally {
+        setDeletingProjectId(null);
+      }
+    }
+  };
 
   const getStatusBadgeVariant = (status) => {
     switch (status) {
@@ -71,6 +95,12 @@ const Projects = () => {
           Nuevo Proyecto
         </Button>
       </div>
+
+      {deleteError && (
+        <Alert variant="danger" dismissible onClose={() => setDeleteError(null)}>
+          {deleteError}
+        </Alert>
+      )}
 
       {projects && projects.length > 0 ? (
         <Row className="g-4">
@@ -133,15 +163,14 @@ const Projects = () => {
                     <Button 
                       variant="outline-danger" 
                       size="sm"
-                      onClick={() => {
-                        if (window.confirm('¿Estás seguro de que quieres eliminar este proyecto?')) {
-                          // TODO: Implement delete functionality
-                          console.log('Delete project:', project.id);
-                        }
-                      }}
+                      disabled={deletingProjectId === project.id}
+                      onClick={() => handleDeleteProject(project.id, project.name)}
                     >
-                      <FontAwesomeIcon icon={faTrash} className="me-1" />
-                      Eliminar
+                      <FontAwesomeIcon 
+                        icon={deletingProjectId === project.id ? faClock : faTrash} 
+                        className="me-1" 
+                      />
+                      {deletingProjectId === project.id ? 'Eliminando...' : 'Eliminar'}
                     </Button>
                   </div>
                 </Card.Footer>

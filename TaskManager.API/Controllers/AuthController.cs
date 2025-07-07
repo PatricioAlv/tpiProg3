@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.API.Services;
 using TaskManager.Shared.DTOs;
@@ -68,6 +69,7 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet("users")]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _authService.GetAllUsersAsync();

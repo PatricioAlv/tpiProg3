@@ -8,7 +8,7 @@ TaskManager es un sistema completo de gestión de tareas y proyectos de programa
 
 ### 1. TaskManager.API - API RESTful
 - **Tecnología**: ASP.NET Core Web API (.NET 8)
-- **Base de Datos**: SQL Server con Entity Framework Core
+- **Base de Datos**: SQLite
 - **Autenticación**: JWT (JSON Web Tokens)
 - **Funcionalidades**:
   - Autenticación y autorización de usuarios
@@ -247,24 +247,4 @@ TaskManager/
    - Estadísticas avanzadas y reportes
    - Exportación de datos del proyecto
 
-## Contribución
 
-Para contribuir al proyecto:
-
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit tus cambios (`git commit -am 'Agrega nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abre un Pull Request
-
-## Soporte
-
-Si encuentras algún problema o tienes preguntas:
-
-1. Revisa la documentación
-2. Busca en los issues existentes
-3. Crea un nuevo issue con detalles del problema
-
----
-
-**Desarrollado con ❤️ para la gestión eficiente de proyectos de programación**

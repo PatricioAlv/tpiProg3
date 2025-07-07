@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Badge, Spinner, Alert } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faTasks, 
+  faCalendar, 
+  faUser, 
+  faProjectDiagram,
+  faFlag,
+  faClock
+} from '@fortawesome/free-solid-svg-icons';
 import { taskService } from '../services/taskService';
 
 const Tasks = () => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const loadTasks = async () => {
             try {
+                setError(null);
                 const tasksData = await taskService.getAllTasks();
                 setTasks(tasksData);
             } catch (error) {
                 console.error('Error loading tasks:', error);
+                setError('Error al cargar las tareas');
             } finally {
                 setLoading(false);
             }
@@ -20,71 +33,149 @@ const Tasks = () => {
         loadTasks();
     }, []);
 
+    // Funciones helper para mostrar status y prioridad
+    const getStatusBadgeVariant = (status) => {
+        switch (parseInt(status)) {
+            case 0: return 'secondary'; // Todo
+            case 1: return 'warning';   // InProgress
+            case 2: return 'success';   // Done
+            default: return 'secondary';
+        }
+    };
+
+    const getStatusDisplayName = (status) => {
+        switch (parseInt(status)) {
+            case 0: return 'Por Hacer';
+            case 1: return 'En Progreso';
+            case 2: return 'Completado';
+            default: return 'Desconocido';
+        }
+    };
+
+    const getPriorityBadgeVariant = (priority) => {
+        switch (parseInt(priority)) {
+            case 0: return 'success'; // Low
+            case 1: return 'warning'; // Medium
+            case 2: return 'danger';  // High
+            default: return 'secondary';
+        }
+    };
+
+    const getPriorityDisplayName = (priority) => {
+        switch (parseInt(priority)) {
+            case 0: return 'Baja';
+            case 1: return 'Media';
+            case 2: return 'Alta';
+            default: return 'Desconocido';
+        }
+    };
+
     if (loading) {
         return (
-            <div className="d-flex justify-content-center">
-                <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                </div>
-            </div>
+            <Container className="d-flex justify-content-center mt-5">
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Cargando tareas...</span>
+                </Spinner>
+            </Container>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container className="mt-4">
+                <Alert variant="danger">
+                    {error}
+                </Alert>
+            </Container>
         );
     }
 
     return (
-        <div className="container-fluid">
+        <Container fluid className="fade-in">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1>Todas las Tareas</h1>
+                <h1>
+                    <FontAwesomeIcon icon={faTasks} className="me-2" />
+                    Todas las Tareas
+                </h1>
             </div>
 
             {tasks.length === 0 ? (
-                <div className="alert alert-info">
+                <Alert variant="info">
+                    <FontAwesomeIcon icon={faTasks} className="me-2" />
                     No hay tareas disponibles.
-                </div>
+                </Alert>
             ) : (
-                <div className="row">
+                <Row className="g-4">
                     {tasks.map(task => (
-                        <div key={task.id} className="col-md-4 mb-3">
-                            <div className="card">
-                                <div className="card-body">
-                                    <h6 className="card-title">{task.title}</h6>
-                                    <p className="card-text">{task.description}</p>
-                                    <p className="card-text">
+                        <Col md={6} lg={4} key={task.id}>
+                            <Card className="h-100">
+                                <Card.Header className="d-flex justify-content-between align-items-center">
+                                    <h6 className="mb-0">{task.title}</h6>
+                                    <Badge bg={getStatusBadgeVariant(task.status)}>
+                                        {getStatusDisplayName(task.status)}
+                                    </Badge>
+                                </Card.Header>
+                                <Card.Body>
+                                    <Card.Text className="text-muted mb-3">
+                                        {task.description}
+                                    </Card.Text>
+                                    
+                                    <div className="mb-3">
                                         <small className="text-muted">
-                                            Proyecto: {task.projectName}
+                                            <FontAwesomeIcon icon={faProjectDiagram} className="me-1" />
+                                            Proyecto: {task.projectName || 'Sin asignar'}
                                         </small>
-                                    </p>
-                                    <span className={`badge bg-${getStatusColor(task.status)}`}>
-                                        {task.status}
-                                    </span>
-                                    <span className={`badge bg-${getPriorityColor(task.priority)} ms-2`}>
-                                        {task.priority}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                                    </div>
+
+                                    {task.dueDate && (
+                                        <div className="mb-3">
+                                            <small className="text-muted">
+                                                <FontAwesomeIcon icon={faClock} className="me-1" />
+                                                Vence: {new Date(task.dueDate).toLocaleDateString('es-ES')}
+                                            </small>
+                                        </div>
+                                    )}
+
+                                    <div className="mb-3">
+                                        <small className="text-muted">
+                                            <FontAwesomeIcon icon={faCalendar} className="me-1" />
+                                            Creado: {new Date(task.createdAt).toLocaleDateString('es-ES')}
+                                        </small>
+                                    </div>
+
+                                    {task.assignedToUser && (
+                                        <div className="mb-3">
+                                            <small className="text-muted">
+                                                <FontAwesomeIcon icon={faUser} className="me-1" />
+                                                Asignado a: {task.assignedToUser.name}
+                                            </small>
+                                        </div>
+                                    )}
+
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <Badge 
+                                            bg={getPriorityBadgeVariant(task.priority)}
+                                            className="d-flex align-items-center"
+                                        >
+                                            <FontAwesomeIcon icon={faFlag} className="me-1" />
+                                            {getPriorityDisplayName(task.priority)}
+                                        </Badge>
+
+                                        {task.createdByUser && (
+                                            <small className="text-muted">
+                                                <FontAwesomeIcon icon={faUser} className="me-1" />
+                                                Por: {task.createdByUser.name}
+                                            </small>
+                                        )}
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </Col>
                     ))}
-                </div>
+                </Row>
             )}
-        </div>
+        </Container>
     );
-};
-
-const getStatusColor = (status) => {
-    switch (status) {
-        case 'Todo': return 'secondary';
-        case 'InProgress': return 'warning';
-        case 'Done': return 'success';
-        default: return 'secondary';
-    }
-};
-
-const getPriorityColor = (priority) => {
-    switch (priority) {
-        case 'Low': return 'success';
-        case 'Medium': return 'warning';
-        case 'High': return 'danger';
-        default: return 'secondary';
-    }
 };
 
 export default Tasks;
