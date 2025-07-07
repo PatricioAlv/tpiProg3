@@ -1,0 +1,90 @@
+@{
+    ViewData["Title"] = "Generar Código QR";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">
+                    <i class="fas fa-qrcode"></i> Generar Código QR de Acceso Exclusivo
+                </h3>
+            </div>
+            <div class="card-body text-center">
+                <p class="mb-4">
+                    Este código QR te permitirá acceder a funcionalidades exclusivas de la aplicación.
+                    <br />
+                    <strong>Nota:</strong> El código QR expira en 10 minutos por seguridad.
+                </p>
+                
+                @if (ViewBag.QRCode != null)
+                {
+                    <div class="mb-4">
+                        <img src="@ViewBag.QRCode" alt="Código QR" class="img-fluid border rounded" style="max-width: 300px;" />
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Instrucciones:</strong>
+                        <ol class="text-start mt-2">
+                            <li>Usa la cámara de tu dispositivo móvil para escanear el código QR</li>
+                            <li>También puedes usar aplicaciones de lectura de códigos QR</li>
+                            <li>El código te llevará a una página con funcionalidades exclusivas</li>
+                            <li>Recuerda que el código expira en 10 minutos</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="@Url.Action("Generate")" class="btn btn-primary me-md-2">
+                            <i class="fas fa-refresh"></i> Generar Nuevo Código
+                        </a>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                            <i class="fas fa-home"></i> Volver al Inicio
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Error al generar el código QR. Por favor, inténtalo de nuevo.
+                    </div>
+                    
+                    <a href="@Url.Action("Generate")" class="btn btn-primary">
+                        <i class="fas fa-refresh"></i> Intentar de Nuevo
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-shield-alt"></i> Seguridad del Código QR</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        <strong>Expiración automática:</strong> El código QR expira en 10 minutos
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        <strong>Hash seguro:</strong> Utiliza HMAC-SHA256 para validación
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        <strong>Único por usuario:</strong> Cada código está vinculado a tu cuenta
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        <strong>Uso único:</strong> Cada código puede ser usado solo una vez
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

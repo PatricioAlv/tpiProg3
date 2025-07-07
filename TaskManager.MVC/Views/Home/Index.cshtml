@@ -1,0 +1,89 @@
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="hero-section bg-light p-5 rounded mb-4">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold text-primary">TaskManager</h1>
+        <p class="col-md-8 fs-4">Sistema de gestión de tareas y proyectos de programación</p>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <p class="lead">Organiza tus proyectos, gestiona tareas y colabora con tu equipo de manera eficiente.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a class="btn btn-primary btn-lg px-4 me-md-2" asp-controller="Auth" asp-action="Register">
+                    <i class="fas fa-user-plus"></i> Registrarse
+                </a>
+                <a class="btn btn-outline-secondary btn-lg px-4" asp-controller="Auth" asp-action="Login">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </a>
+            </div>
+        }
+        else
+        {
+            <p class="lead">¡Bienvenido de vuelta, @User.Identity.Name!</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a class="btn btn-primary btn-lg px-4 me-md-2" asp-controller="Projects" asp-action="Index">
+                    <i class="fas fa-project-diagram"></i> Mis Proyectos
+                </a>
+                <a class="btn btn-outline-secondary btn-lg px-4" asp-controller="Tasks" asp-action="Index">
+                    <i class="fas fa-tasks"></i> Mis Tareas
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-project-diagram text-primary"></i> Gestión de Proyectos
+                </h5>
+                <p class="card-text">Crea y administra proyectos de programación con equipos de trabajo.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-tasks text-success"></i> Control de Tareas
+                </h5>
+                <p class="card-text">Organiza tareas con estados, prioridades y asignaciones a miembros del equipo.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-qrcode text-info"></i> Acceso QR
+                </h5>
+                <p class="card-text">Genera códigos QR seguros para acceder a funcionalidades exclusivas.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="mt-5">
+        <h3>Acceso Rápido</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="list-group">
+                    <a href="@Url.Action("Create", "Projects")" class="list-group-item list-group-item-action">
+                        <i class="fas fa-plus text-success"></i> Crear Nuevo Proyecto
+                    </a>
+                    <a href="@Url.Action("Create", "Tasks")" class="list-group-item list-group-item-action">
+                        <i class="fas fa-plus text-primary"></i> Crear Nueva Tarea
+                    </a>
+                    <a href="@Url.Action("Generate", "QR")" class="list-group-item list-group-item-action">
+                        <i class="fas fa-qrcode text-info"></i> Generar Código QR
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

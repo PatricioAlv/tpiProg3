@@ -1,0 +1,112 @@
+@{
+    ViewData["Title"] = "Validación de Código QR";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>
+                    <i class="fas fa-qrcode"></i> Validación de Código QR
+                </h3>
+            </div>
+            <div class="card-body text-center">
+                @if (ViewBag.IsValid != null && ViewBag.IsValid)
+                {
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle fa-3x mb-3"></i>
+                        <h4 class="text-success">¡Código QR Válido!</h4>
+                        <p class="mb-0">@ViewBag.Message</p>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header bg-success text-white">
+                            <h5><i class="fas fa-unlock"></i> Funcionalidad Exclusiva Desbloqueada</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6>@ViewBag.Feature</h6>
+                            <p class="text-muted">Acceso validado el: @ViewBag.Timestamp</p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6><i class="fas fa-chart-bar"></i> Estadísticas Avanzadas</h6>
+                                            <p class="text-muted small">Acceso a reportes detallados de productividad</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6><i class="fas fa-download"></i> Exportar Datos</h6>
+                                            <p class="text-muted small">Descarga tus proyectos y tareas en formato Excel</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6><i class="fas fa-palette"></i> Temas Personalizados</h6>
+                                            <p class="text-muted small">Personaliza la apariencia de la aplicación</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6><i class="fas fa-bell"></i> Notificaciones Premium</h6>
+                                            <p class="text-muted small">Recibe notificaciones avanzadas por email</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle fa-3x mb-3"></i>
+                        <h4 class="text-danger">Código QR Inválido</h4>
+                        <p class="mb-0">@ViewBag.Message</p>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header bg-danger text-white">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Posibles Causas</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled text-start">
+                                <li class="mb-2">
+                                    <i class="fas fa-clock text-warning"></i>
+                                    <strong>Código expirado:</strong> Los códigos QR expiran en 10 minutos
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-link text-warning"></i>
+                                    <strong>Enlace incorrecto:</strong> Verifica que el código QR sea válido
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-shield-alt text-warning"></i>
+                                    <strong>Hash inválido:</strong> El código puede haber sido modificado
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                    <a href="@Url.Action("Generate")" class="btn btn-primary me-md-2">
+                        <i class="fas fa-qrcode"></i> Generar Nuevo Código
+                    </a>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

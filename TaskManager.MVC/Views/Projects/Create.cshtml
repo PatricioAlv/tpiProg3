@@ -1,0 +1,99 @@
+@model TaskManager.Shared.DTOs.CreateProjectDto
+@{
+    ViewData["Title"] = "Crear Proyecto";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    <i class="fas fa-plus"></i> Crear Nuevo Proyecto
+                </h3>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="form-label">
+                            <i class="fas fa-project-diagram"></i> Nombre del Proyecto *
+                        </label>
+                        <input asp-for="Name" class="form-control" placeholder="Nombre del proyecto" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="form-label">
+                            <i class="fas fa-align-left"></i> Descripción
+                        </label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Descripción del proyecto"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="DueDate" class="form-label">
+                                    <i class="fas fa-calendar"></i> Fecha de Vencimiento
+                                </label>
+                                <input asp-for="DueDate" class="form-control" type="date" />
+                                <span asp-validation-for="DueDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Status" class="form-label">
+                                    <i class="fas fa-flag"></i> Estado
+                                </label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="0">Planificación</option>
+                                    <option value="1">En Progreso</option>
+                                    <option value="2">Completado</option>
+                                    <option value="3">En Pausa</option>
+                                    <option value="4">Cancelado</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-users"></i> Miembros del Equipo
+                        </label>
+                        <div class="row">
+                            @if (ViewBag.Users != null)
+                            {
+                                @foreach (var user in (List<TaskManager.Shared.DTOs.UserDto>)ViewBag.Users)
+                                {
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="TeamMemberIds" value="@user.Id" id="user_@user.Id">
+                                            <label class="form-check-label" for="user_@user.Id">
+                                                @user.Name (@user.Email)
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Crear Proyecto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
