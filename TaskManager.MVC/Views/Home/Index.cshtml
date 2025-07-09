@@ -6,7 +6,7 @@
     <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold text-primary">TaskManager</h1>
         <p class="col-md-8 fs-4">Sistema de gestión de tareas y proyectos de programación</p>
-        @if (!User.Identity.IsAuthenticated)
+        @if (User.Identity?.IsAuthenticated != true)
         {
             <p class="lead">Organiza tus proyectos, gestiona tareas y colabora con tu equipo de manera eficiente.</p>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
@@ -66,7 +66,7 @@
     </div>
 </div>
 
-@if (User.Identity.IsAuthenticated)
+@if (User.Identity?.IsAuthenticated == true)
 {
     <div class="mt-5">
         <h3>Acceso Rápido</h3>

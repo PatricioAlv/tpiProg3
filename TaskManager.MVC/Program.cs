@@ -28,6 +28,10 @@ builder.Services.AddScoped<IQRCodeService, HttpQRCodeService>();
 
 var app = builder.Build();
 
+// Configure URLs and ports
+app.Urls.Add("http://localhost:5001");
+app.Urls.Add("https://localhost:5002");
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -129,7 +129,7 @@ dotnet restore
 dotnet run
 ```
 
-La aplicación MVC estará disponible en: `https://localhost:5001`
+La aplicación MVC estará disponible en: `https://localhost:5002`
 
 ### Ejecutar la SPA
 
