@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Badge, Spinner, Alert } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Container, Row, Col, Card, Badge, Spinner, Button, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faTasks, 
@@ -9,6 +10,7 @@ import {
   faFlag,
   faClock
 } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { taskService } from '../services/taskService';
 
 const Tasks = () => {
@@ -97,7 +99,14 @@ const Tasks = () => {
                     <FontAwesomeIcon icon={faTasks} className="me-2" />
                     Todas las Tareas
                 </h1>
+                <Button as={Link} to="/tasks/create" variant="primary">
+                    <FontAwesomeIcon icon={faPlus} className="me-2" />
+                    Nueva Tarea
+                </Button>
             </div>
+            
+            
+            
 
             {tasks.length === 0 ? (
                 <Alert variant="info">
