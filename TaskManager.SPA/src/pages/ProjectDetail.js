@@ -293,7 +293,7 @@ const ProjectDetail = () => {
                             </Button>
                             <Button 
                                 variant="primary"
-                                onClick={() => navigate(`/projects/${id}/tasks/create`)}
+                                onClick={() => navigate(`/projects/${id}/tasks/create`)} // Asegúrate de que `id` sea el projectId
                             >
                                 <FontAwesomeIcon icon={faPlus} className="me-1" />
                                 Nueva Tarea

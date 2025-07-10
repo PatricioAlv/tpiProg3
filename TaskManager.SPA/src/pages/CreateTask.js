@@ -36,13 +36,12 @@ const CreateTask = () => {
         const loadTeamMembers = async () => {
             if (task.projectId) {
                 try {
-                    console.log('Loading team members for project:', task.projectId);
+                    console.log('Cargando miembros del equipo para el proyecto:', task.projectId);
                     const projectData = await projectService.getProject(task.projectId);
-                    console.log('Project data received:', projectData);
-                    console.log('Team members found:', projectData.teamMembers);
+                    console.log('Datos del proyecto:', projectData);
                     setTeamMembers(projectData.teamMembers || []);
                 } catch (error) {
-                    console.error('Error loading team members:', error);
+                    console.error('Error al cargar los miembros del equipo:', error);
                     setTeamMembers([]);
                 }
             } else {
@@ -86,6 +85,14 @@ const CreateTask = () => {
             [name]: processedValue
         });
     };
+
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (!projects.length) {
+        return <div>No se encontraron proyectos.</div>;
+    }
 
     return (
         <div className="container">

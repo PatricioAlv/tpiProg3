@@ -24,10 +24,19 @@ const QRGenerate = () => {
         setLoading(true);
         setError('');
         setSuccess('');
-
+    
         try {
+            // Llama al backend para obtener el hash único
             const response = await qrService.generateQR('exclusive_access');
-            setQrCode(response.qrCode);
+    
+            // Construye la URL a la que redirigirá el QR dentro de tu aplicación
+            const accessUrl = `${window.location.origin}/QRAccessPage/${response.hash}`;
+    
+            // Usa una API para generar la imagen del QR que contiene la URL
+            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(accessUrl)}&size=300x300`;
+    
+            // Asigna la imagen al estado
+            setQrCode(qrImageUrl);
             setSuccess('¡Código QR seguro generado exitosamente! Válido por 10 minutos.');
         } catch (error) {
             console.error('Error generating QR:', error);
@@ -36,6 +45,7 @@ const QRGenerate = () => {
             setLoading(false);
         }
     };
+    
 
     const handleValidateQR = async () => {
         if (!validationHash.trim()) {
