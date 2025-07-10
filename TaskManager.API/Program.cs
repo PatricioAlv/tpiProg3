@@ -45,6 +45,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IQRCodeService, QRCodeService>();
+builder.Services.AddScoped<INetQuestionService, NetQuestionService>();
 
 // CORS
 builder.Services.AddCors(options =>
