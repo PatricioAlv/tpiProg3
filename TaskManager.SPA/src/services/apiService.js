@@ -103,7 +103,7 @@ export const qrService = {
   },
 
   validateQR: async (hash) => {
-    const response = await apiClient.get(`/qr/validate?hash=${hash}`);
+    const response = await apiClient.post('/validate-qr', { hash });
     return response.data;
   },
 };
