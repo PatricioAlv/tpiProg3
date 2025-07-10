@@ -60,5 +60,11 @@ namespace TaskManager.MVC.Services
             var result = await GetAsync<PagedResultDto<TaskItemDto>>($"/api/tasks/paginated?page={page}&pageSize={pageSize}");
             return result ?? new PagedResultDto<TaskItemDto>();
         }
+
+        public async Task<IEnumerable<TaskItemDto>> GetAllTasksAsync(int userId)
+        {
+            var result = await GetAsync<IEnumerable<TaskItemDto>>("/api/tasks");
+            return result ?? new List<TaskItemDto>();
+        }
     }
 }

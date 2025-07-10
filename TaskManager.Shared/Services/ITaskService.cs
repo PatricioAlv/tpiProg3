@@ -11,5 +11,6 @@ namespace TaskManager.Shared.Services
         Task<bool> DeleteTaskAsync(int taskId, int userId);
         Task<PagedResultDto<TaskItemDto>> GetPagedTasksAsync(int projectId, int userId, int page, int pageSize);
         Task<PagedResultDto<TaskItemDto>> GetTasksWithPaginationAsync(int userId, int page, int pageSize);
+        Task<IEnumerable<TaskItemDto>> GetAllTasksAsync(int userId);
     }
 }
