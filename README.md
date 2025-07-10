@@ -789,59 +789,6 @@ TaskManager/                        # 🏠 Directorio raíz del proyecto
 - **Estado**: Usar React Query para estado del servidor
 - **Estilos**: Bootstrap classes preferidas sobre CSS custom
 
-### 🧪 Testing y Calidad
-
-#### Pruebas Requeridas
-- **Unit Tests**: Para servicios y funciones críticas
-- **Integration Tests**: Para endpoints de API
-- **Component Tests**: Para componentes React principales
-- **E2E Tests**: Para flujos críticos de usuario
-
-#### Herramientas de Calidad
-- **ESLint**: Para JavaScript/React
-- **SonarQube**: Análisis de código (opcional)
-- **Dependabot**: Actualizaciones automáticas de dependencias
-
-## 📜 Licencia
-
-Este proyecto está licenciado bajo la **Licencia MIT** - ver el archivo [LICENSE](LICENSE) para más detalles.
-
-### Resumen de la Licencia MIT
-- ✅ **Uso comercial**: Permitido
-- ✅ **Modificación**: Permitida
-- ✅ **Distribución**: Permitida
-- ✅ **Uso privado**: Permitido
-- ❌ **Responsabilidad**: Sin garantías
-- ❌ **Garantía**: Sin garantías
-
-## 📞 Contacto y Soporte
-
-### 🆘 Soporte Técnico
-- **Issues en GitHub**: Para reportar bugs o solicitar funcionalidades
-- **Discussions**: Para preguntas generales y discusiones
-- **Wiki**: Documentación extendida y tutoriales
-
-### 📧 Contacto del Equipo de Desarrollo
-- **Email**: [contact@taskmanager.dev](mailto:contact@taskmanager.dev)
-- **LinkedIn**: [TaskManager Project](https://linkedin.com/company/taskmanager)
-- **Twitter**: [@TaskManagerDev](https://twitter.com/TaskManagerDev)
-
-### 🔗 Enlaces Útiles
-- **Documentación**: [docs.taskmanager.dev](https://docs.taskmanager.dev)
-- **Demo en vivo**: [demo.taskmanager.dev](https://demo.taskmanager.dev)
-- **Roadmap**: [roadmap.taskmanager.dev](https://roadmap.taskmanager.dev)
-- **Status**: [status.taskmanager.dev](https://status.taskmanager.dev)
-
----
-
-## 🏆 Reconocimientos
-
-### 💝 Agradecimientos Especiales
-- **Microsoft**: Por .NET Core y herramientas de desarrollo
-- **Facebook/Meta**: Por React y ecosistema
-- **Bootstrap Team**: Por el framework CSS
-- **SQLite Team**: Por la base de datos ligera
-- **QRCoder Contributors**: Por la librería de códigos QR
 
 ### 🌟 Tecnologías Utilizadas
 - **ASP.NET Core 9.0** - Framework backend principal
@@ -852,30 +799,7 @@ Este proyecto está licenciado bajo la **Licencia MIT** - ver el archivo [LICENS
 
 ---
 
-<div align="center">
 
-# 🚀 TaskManager
-## Sistema Completo de Gestión de Tareas y Proyectos
 
-**Desarrollado con las mejores prácticas y tecnologías modernas de desarrollo web**
-
-[![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
-[![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.0-purple.svg)](https://getbootstrap.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-### ✨ Funcionalidades Destacadas
-🔐 **Autenticación JWT Segura** | 📄 **Paginación Inteligente** | 🔍 **Códigos QR Exclusivos** | 🔄 **Recuperación de Contraseña**
-
-### 🌐 Multi-Plataforma
-🔧 **API RESTful** | 🖥️ **Aplicación MVC** | ⚛️ **SPA React Moderna**
-
----
-
-**© 2024 TaskManager Project. Todos los derechos reservados.**
-
-*Construyendo el futuro de la gestión de proyectos de desarrollo.*
-
-</div>
 
 
