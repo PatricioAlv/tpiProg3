@@ -14,6 +14,7 @@ import TaskDetail from './pages/TaskDetail';
 import CreateTask from './pages/CreateTask';
 import EditTask from './pages/EditTask';
 import QRGenerate from './pages/QRGenerate';
+import QRAccessPage from './pages/QRAccessPage'; // ← asegurate de importar esto
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
 
@@ -28,7 +29,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
+
           {/* Protected Routes */}
           <Route path="/projects" element={
             <ProtectedRoute>
@@ -50,7 +51,7 @@ function App() {
               <EditProject />
             </ProtectedRoute>
           } />
-          
+
           <Route path="/tasks" element={
             <ProtectedRoute>
               <Tasks />
@@ -66,17 +67,24 @@ function App() {
               <CreateTask />
             </ProtectedRoute>
           } />
+          <Route path="/projects/:projectId/tasks/create" element={
+            <ProtectedRoute>
+              <CreateTask />
+            </ProtectedRoute>
+          } />
           <Route path="/tasks/:id/edit" element={
             <ProtectedRoute>
               <EditTask />
             </ProtectedRoute>
           } />
-          
+
+          {/* QR Routes */}
           <Route path="/qr" element={
             <ProtectedRoute>
               <QRGenerate />
             </ProtectedRoute>
           } />
+          <Route path="/qr-access/:hash" element={<QRAccessPage />} />
         </Routes>
       </Container>
     </div>
