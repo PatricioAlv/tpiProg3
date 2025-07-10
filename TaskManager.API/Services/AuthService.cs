@@ -111,22 +111,21 @@ namespace TaskManager.API.Services
         {
             User? user = null;
 
-            // Intentar primero con token de backend (GUID)
+        
             user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == resetPasswordDto.Email &&
                                           u.ResetToken == resetPasswordDto.Token &&
                                           u.ResetTokenExpiry > DateTime.UtcNow);
 
-            // Si no se encuentra con token de backend, verificar si es token de frontend
+        
             if (user == null)
             {
                 try
                 {
-                    // Intentar decodificar como token de frontend (base64)
                     var decodedData = System.Text.Json.JsonSerializer.Deserialize<dynamic>(
                         Convert.FromBase64String(resetPasswordDto.Token));
                     
-                    // Verificar que el email coincida y que no haya expirado (1 hora)
+                
                     if (decodedData != null)
                     {
                         var tokenData = decodedData.GetProperty("email").GetString();
@@ -135,11 +134,10 @@ namespace TaskManager.API.Services
                         if (tokenData == resetPasswordDto.Email)
                         {
                             var tokenAge = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - timestamp;
-                            var oneHour = 60 * 60 * 1000; // 1 hora en milisegundos
+                            var oneHour = 60 * 60 * 1000;
                             
                             if (tokenAge <= oneHour)
                             {
-                                // Token de frontend válido, buscar usuario por email
                                 user = await _context.Users
                                     .FirstOrDefaultAsync(u => u.Email == resetPasswordDto.Email);
                             }
@@ -148,7 +146,6 @@ namespace TaskManager.API.Services
                 }
                 catch
                 {
-                    // Si no se puede decodificar, continuar con la lógica normal
                 }
             }
 
@@ -204,10 +201,10 @@ namespace TaskManager.API.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
-                return false; // Usuario no encontrado
+                return false;
             }
 
-            var resetToken = Guid.NewGuid().ToString(); // Genera un token único
+            var resetToken = Guid.NewGuid().ToString();
             user.ResetToken = resetToken;
             user.ResetTokenExpiry = DateTime.UtcNow.AddHours(1);
             await _context.SaveChangesAsync();
@@ -216,7 +213,6 @@ namespace TaskManager.API.Services
 
             var emailBody = $"Haz clic en el siguiente enlace para recuperar tu contraseña: <a href='{resetLink}'>Recuperar Contraseña</a>";
 
-            // TODO: Implement email sending logic
             return true;
         }
 
