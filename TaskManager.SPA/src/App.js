@@ -17,6 +17,8 @@ import QRGenerate from './pages/QRGenerate';
 import QRAccessPage from './pages/QRAccessPage';
 import ExclusiveQuestion from './pages/ExclusiveQuestion';
 import ProtectedRoute from './components/ProtectedRoute';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 import { useAuth } from './contexts/AuthContext';
 
 function App() {
