@@ -1,73 +1,77 @@
 using TaskManager.Shared.Services;
-using System.Text.Json;
-using System.Text;
 
 namespace TaskManager.MVC.Services
 {
-    public class HttpQRCodeService : IQRCodeService
+    public class HttpQRCodeService : BaseHttpService, IQRCodeService
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-
-        public HttpQRCodeService(HttpClient httpClient, IConfiguration configuration)
+        public HttpQRCodeService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+            : base(httpClient, httpContextAccessor, configuration)
         {
-            _httpClient = httpClient;
-            _configuration = configuration;
-            _httpClient.BaseAddress = new Uri(_configuration["ApiSettings:BaseUrl"] ?? "https://localhost:5001");
         }
 
         public async Task<string> GenerateQRCodeAsync(string data)
         {
-            var json = JsonSerializer.Serialize(new { data });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var requestData = new { data };
+            var result = await PostAsync<dynamic>("/api/qr/generate", requestData);
             
-            var response = await _httpClient.PostAsync("/api/qr/generate", content);
-            response.EnsureSuccessStatusCode();
+            // Extraer el código QR del resultado
+            if (result != null)
+            {
+                // Intentar obtener la propiedad qrCode del resultado
+                var resultJson = System.Text.Json.JsonSerializer.Serialize(result);
+                var jsonDoc = System.Text.Json.JsonDocument.Parse(resultJson);
+                if (jsonDoc.RootElement.TryGetProperty("qrCode", out System.Text.Json.JsonElement qrCodeElement))
+                {
+                    return qrCodeElement.GetString() ?? string.Empty;
+                }
+            }
             
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<JsonElement>(responseContent);
-            return result.GetProperty("qrCode").GetString() ?? string.Empty;
+            return string.Empty;
         }
 
         public async Task<bool> ValidateQRCodeAsync(string qrCodeData, string expectedData)
         {
-            var json = JsonSerializer.Serialize(new { qrCodeData, expectedData });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            
-            var response = await _httpClient.PostAsync("/api/qr/validate", content);
-            if (!response.IsSuccessStatusCode)
+            try
+            {
+                var requestData = new { qrCodeData, expectedData };
+                var result = await PostAsync<object>("/api/qr/validate", requestData);
+                return result != null;
+            }
+            catch
+            {
                 return false;
-            
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<JsonElement>(responseContent);
-            return result.GetProperty("isValid").GetBoolean();
+            }
         }
 
         public async Task<string> GenerateSecureQRCodeAsync(int userId, string purpose)
         {
-            var json = JsonSerializer.Serialize(new { userId, purpose });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var requestData = new { userId, purpose };
+            var result = await PostAsync<dynamic>("/api/qr/secure", requestData);
             
-            var response = await _httpClient.PostAsync("/api/qr/generate-secure", content);
-            response.EnsureSuccessStatusCode();
+            if (result != null)
+            {
+                var resultJson = System.Text.Json.JsonSerializer.Serialize(result);
+                var jsonDoc = System.Text.Json.JsonDocument.Parse(resultJson);
+                if (jsonDoc.RootElement.TryGetProperty("qrCode", out System.Text.Json.JsonElement qrCodeElement))
+                {
+                    return qrCodeElement.GetString() ?? string.Empty;
+                }
+            }
             
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<JsonElement>(responseContent);
-            return result.GetProperty("qrCode").GetString() ?? string.Empty;
+            return string.Empty;
         }
 
         public async Task<bool> ValidateSecureQRCodeAsync(string hash)
         {
-            var json = JsonSerializer.Serialize(new { hash });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            
-            var response = await _httpClient.PostAsync("/api/qr/validate-secure", content);
-            if (!response.IsSuccessStatusCode)
+            try
+            {
+                var result = await GetAsync<object>($"/api/qr/secure/validate?hash={Uri.EscapeDataString(hash)}");
+                return result != null;
+            }
+            catch
+            {
                 return false;
-            
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<JsonElement>(responseContent);
-            return result.GetProperty("isValid").GetBoolean();
+            }
         }
     }
 }
