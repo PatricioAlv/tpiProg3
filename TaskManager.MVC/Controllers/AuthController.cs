@@ -42,7 +42,8 @@ namespace TaskManager.MVC.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, result.User.Id.ToString()),
                 new Claim(ClaimTypes.Name, result.User.Name),
-                new Claim(ClaimTypes.Email, result.User.Email)
+                new Claim(ClaimTypes.Email, result.User.Email),
+                new Claim("jwt_token", result.Token) // Almacenar el token JWT
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -84,7 +85,8 @@ namespace TaskManager.MVC.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, result.User.Id.ToString()),
                 new Claim(ClaimTypes.Name, result.User.Name),
-                new Claim(ClaimTypes.Email, result.User.Email)
+                new Claim(ClaimTypes.Email, result.User.Email),
+                new Claim("jwt_token", result.Token) // Almacenar el token JWT
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

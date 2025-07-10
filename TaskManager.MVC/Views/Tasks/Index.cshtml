@@ -1,0 +1,205 @@
+@model TaskManager.Shared.DTOs.PagedResultDto<TaskManager.Shared.DTOs.TaskItemDto>
+@{
+    ViewData["Title"] = "Tareas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>
+        <i class="fas fa-tasks"></i> Mis Tareas
+    </h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nueva Tarea
+    </a>
+</div>
+
+@if (Model.Items.Any())
+{
+    <div class="row">
+        @foreach (var task in Model.Items)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 text-truncate">@task.Title</h6>
+                        <div class="d-flex align-items-center">
+                            <span class="badge @GetStatusBadgeClass(task.Status) me-2">
+                                @GetStatusDisplayName(task.Status)
+                            </span>
+                            <span class="badge @GetPriorityBadgeClass(task.Priority)">
+                                @GetPriorityDisplayName(task.Priority)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@task.Description</p>
+                        <div class="row text-muted small">
+                            <div class="col-12 mb-1">
+                                <i class="fas fa-project-diagram"></i> @task.ProjectName
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-calendar"></i> @task.CreatedAt.ToString("dd/MM/yyyy")
+                            </div>
+                            @if (task.DueDate.HasValue)
+                            {
+                                <div class="col-6">
+                                    <i class="fas fa-clock"></i> @task.DueDate.Value.ToString("dd/MM/yyyy")
+                                </div>
+                            }
+                        </div>
+                        @if (task.AssignedToUser != null)
+                        {
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-user"></i> Asignada a: @task.AssignedToUser.Name
+                                </small>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group w-100" role="group">
+                            <a asp-action="Details" asp-route-id="@task.Id" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@task.Id" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <!-- Paginación -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Paginación de tareas">
+            <ul class="pagination justify-content-center">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </span>
+                    </li>
+                }
+
+                @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                {
+                    @if (i == Model.PageNumber)
+                    {
+                        <li class="page-item active">
+                            <span class="page-link">@i</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize">
+                            Siguiente <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            Siguiente <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    
+    <!-- Información de paginación -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <small class="text-muted">
+            Mostrando @((Model.PageNumber - 1) * Model.PageSize + 1) - @Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount) de @Model.TotalCount tareas
+        </small>
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="fas fa-tasks fa-3x text-muted"></i>
+        </div>
+        <h3 class="text-muted">No tienes tareas aún</h3>
+        <p class="text-muted">¡Crea tu primera tarea para comenzar!</p>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Crear Primera Tarea
+        </a>
+    </div>
+}
+
+@functions {
+    private string GetStatusBadgeClass(TaskManager.Shared.Models.TaskStatus status)
+    {
+        return status switch
+        {
+            TaskManager.Shared.Models.TaskStatus.Todo => "bg-secondary",
+            TaskManager.Shared.Models.TaskStatus.InProgress => "bg-primary",
+            TaskManager.Shared.Models.TaskStatus.Testing => "bg-warning",
+            TaskManager.Shared.Models.TaskStatus.Completed => "bg-success",
+            TaskManager.Shared.Models.TaskStatus.Cancelled => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusDisplayName(TaskManager.Shared.Models.TaskStatus status)
+    {
+        return status switch
+        {
+            TaskManager.Shared.Models.TaskStatus.Todo => "Por Hacer",
+            TaskManager.Shared.Models.TaskStatus.InProgress => "En Progreso",
+            TaskManager.Shared.Models.TaskStatus.Testing => "En Pruebas",
+            TaskManager.Shared.Models.TaskStatus.Completed => "Completada",
+            TaskManager.Shared.Models.TaskStatus.Cancelled => "Cancelada",
+            _ => status.ToString()
+        };
+    }
+
+    private string GetPriorityBadgeClass(TaskManager.Shared.Models.TaskPriority priority)
+    {
+        return priority switch
+        {
+            TaskManager.Shared.Models.TaskPriority.Low => "bg-success",
+            TaskManager.Shared.Models.TaskPriority.Medium => "bg-warning",
+            TaskManager.Shared.Models.TaskPriority.High => "bg-danger",
+            TaskManager.Shared.Models.TaskPriority.Critical => "bg-dark",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetPriorityDisplayName(TaskManager.Shared.Models.TaskPriority priority)
+    {
+        return priority switch
+        {
+            TaskManager.Shared.Models.TaskPriority.Low => "Baja",
+            TaskManager.Shared.Models.TaskPriority.Medium => "Media",
+            TaskManager.Shared.Models.TaskPriority.High => "Alta",
+            TaskManager.Shared.Models.TaskPriority.Critical => "Crítica",
+            _ => priority.ToString()
+        };
+    }
+}

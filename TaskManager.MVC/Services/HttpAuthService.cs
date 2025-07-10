@@ -5,25 +5,25 @@ using System.Text;
 
 namespace TaskManager.MVC.Services
 {
-    public class HttpAuthService : IAuthService
+    public class HttpAuthService : BaseHttpService, IAuthService
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-
-        public HttpAuthService(HttpClient httpClient, IConfiguration configuration)
+        public HttpAuthService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+            : base(httpClient, httpContextAccessor, configuration)
         {
-            _httpClient = httpClient;
-            _configuration = configuration;
-            _httpClient.BaseAddress = new Uri(_configuration["ApiSettings:BaseUrl"] ?? "https://localhost:5001");
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
+            // Para login no usamos BaseHttpService porque no hay token aún
             var json = JsonSerializer.Serialize(loginDto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             
             var response = await _httpClient.PostAsync("/api/auth/login", content);
-            response.EnsureSuccessStatusCode();
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                return null!; // Credenciales inválidas
+            }
             
             var responseContent = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<AuthResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new AuthResponseDto();
@@ -31,11 +31,16 @@ namespace TaskManager.MVC.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
         {
+            // Para register no usamos BaseHttpService porque no hay token aún
             var json = JsonSerializer.Serialize(registerDto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             
             var response = await _httpClient.PostAsync("/api/auth/register", content);
-            response.EnsureSuccessStatusCode();
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                return null!; // Error en el registro
+            }
             
             var responseContent = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<AuthResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new AuthResponseDto();
@@ -43,47 +48,44 @@ namespace TaskManager.MVC.Services
 
         public async Task<bool> ValidateTokenAsync(string token)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            
-            var response = await _httpClient.GetAsync("/api/auth/validate");
-            return response.IsSuccessStatusCode;
+            try
+            {
+                await GetAsync<object>("/api/auth/validate");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<UserDto?> GetCurrentUserAsync()
         {
-            var response = await _httpClient.GetAsync("/api/auth/me");
-            if (!response.IsSuccessStatusCode)
-                return null;
-            
-            var responseContent = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<UserDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return await GetAsync<UserDto>("/api/auth/me");
         }
 
         public async Task ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
         {
-            var json = JsonSerializer.Serialize(forgotPasswordDto);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            
-            var response = await _httpClient.PostAsync("/api/auth/forgot-password", content);
-            response.EnsureSuccessStatusCode();
+            await PostAsync<object>("/api/auth/forgot-password", forgotPasswordDto);
         }
 
         public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
         {
-            var json = JsonSerializer.Serialize(resetPasswordDto);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            
-            var response = await _httpClient.PostAsync("/api/auth/reset-password", content);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                await PostAsync<object>("/api/auth/reset-password", resetPasswordDto);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            var response = await _httpClient.GetAsync("/api/auth/users");
-            response.EnsureSuccessStatusCode();
-            
-            var responseContent = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<IEnumerable<UserDto>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<UserDto>();
+            var result = await GetAsync<IEnumerable<UserDto>>("/api/auth/users");
+            return result ?? new List<UserDto>();
         }
     }
 }
