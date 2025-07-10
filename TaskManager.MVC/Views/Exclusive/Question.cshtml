@@ -1,0 +1,165 @@
+@model TaskManager.MVC.Services.NetQuestionResponse
+
+@{
+    ViewData["Title"] = "Pregunta Exclusiva sobre .NET";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-star"></i> Funcionalidad Exclusiva - Pregunta sobre .NET
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>¡Acceso Exclusivo!</strong> Esta pregunta solo está disponible mediante código QR.
+                        <br><small>Pregunta de la hora: @Model.Question.Hour:00 - Expira: @Model.Question.ExpiresAt.ToString("dd/MM/yyyy HH:mm")</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4>@Model.Question.Question</h4>
+                    </div>
+
+                    <form id="answerForm">
+                        <input type="hidden" id="qrHash" value="@ViewBag.Hash" />
+                        
+                        <div class="mb-3">
+                            @for (int i = 0; i < Model.Question.Options.Length; i++)
+                            {
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="answer" id="option@i" value="@Model.Question.Options[i].Substring(0, 1)">
+                                    <label class="form-check-label" for="option@i">
+                                        @Model.Question.Options[i]
+                                    </label>
+                                </div>
+                            }
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane"></i> Enviar Respuesta
+                        </button>
+                    </form>
+
+                    <div id="result" class="mt-4" style="display: none;">
+                        <div class="alert" id="resultAlert">
+                            <span id="resultMessage"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>
+                        <i class="fas fa-clock"></i> Accedido: @Model.AccessedAt.ToString("dd/MM/yyyy HH:mm:ss")
+                        <br><i class="fas fa-question-circle"></i> @Model.Instructions
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('answerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (!selectedOption) {
+                alert('Por favor selecciona una respuesta');
+                return;
+            }
+            
+            const hash = document.getElementById('qrHash').value;
+            const answer = selectedOption.value;
+            
+            // Deshabilitar el botón mientras se envía
+            const submitBtn = document.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            
+            fetch('/Exclusive/SubmitAnswer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `hash=${encodeURIComponent(hash)}&answer=${encodeURIComponent(answer)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                const resultAlert = document.getElementById('resultAlert');
+                const resultMessage = document.getElementById('resultMessage');
+                
+                if (data.isCorrect) {
+                    resultAlert.className = 'alert alert-success';
+                    resultMessage.innerHTML = '<i class="fas fa-check-circle"></i> ' + data.message;
+                } else {
+                    resultAlert.className = 'alert alert-danger';
+                    resultMessage.innerHTML = '<i class="fas fa-times-circle"></i> ' + data.message;
+                }
+                
+                resultDiv.style.display = 'block';
+                
+                // Deshabilitar el formulario después de enviar
+                document.querySelectorAll('input[name="answer"]').forEach(input => {
+                    input.disabled = true;
+                });
+                
+                submitBtn.style.display = 'none';
+                
+                // Scroll hasta el resultado
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const resultDiv = document.getElementById('result');
+                const resultAlert = document.getElementById('resultAlert');
+                const resultMessage = document.getElementById('resultMessage');
+                
+                resultAlert.className = 'alert alert-danger';
+                resultMessage.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error al enviar la respuesta';
+                resultDiv.style.display = 'block';
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Respuesta';
+            });
+        });
+    </script>
+}
+
+<style>
+    .form-check-input:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    
+    .card {
+        border: none;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+    }
+    
+    .form-check-label {
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    
+    .form-check-label:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .form-check-input:checked + .form-check-label {
+        background-color: #e3f2fd;
+        color: #0056b3;
+        font-weight: bold;
+    }
+</style>

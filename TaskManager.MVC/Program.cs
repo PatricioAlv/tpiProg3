@@ -51,6 +51,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "exclusive",
+    pattern: "exclusive/{hash}",
+    defaults: new { controller = "Exclusive", action = "Question" });
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 

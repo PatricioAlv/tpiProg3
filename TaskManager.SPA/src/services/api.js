@@ -14,21 +14,34 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const token = Cookies.get('token');
+    console.log('API Interceptor: Token exists:', !!token);
     if (token) {
+      console.log('API Interceptor: Adding token to request');
       config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.log('API Interceptor: No token found');
     }
     return config;
   },
   (error) => {
+    console.error('API Interceptor: Request error:', error);
     return Promise.reject(error);
   }
 );
 
 // Response interceptor to handle errors
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('API Interceptor: Response received:', response.status);
+    return response;
+  },
   (error) => {
+    console.error('API Interceptor: Response error:', error);
+    console.error('API Interceptor: Error status:', error.response?.status);
+    console.error('API Interceptor: Error data:', error.response?.data);
+    
     if (error.response?.status === 401) {
+      console.log('API Interceptor: Unauthorized - removing tokens');
       // Token expired or invalid
       Cookies.remove('token');
       Cookies.remove('user');

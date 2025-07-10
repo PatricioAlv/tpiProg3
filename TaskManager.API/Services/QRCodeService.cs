@@ -43,7 +43,8 @@ namespace TaskManager.API.Services
             var data = $"{userId}|{purpose}|{timestamp}|{expiryTime}";
             var hash = GenerateHash(data);
             
-            var url = $"https://localhost:5001/api/qr/validate?hash={hash}";
+            // URL que apunta a la SPA de React para funcionalidad exclusiva
+            var url = $"http://localhost:3000/exclusive/{hash}";
             
             return await GenerateQRCodeAsync(url);
         }

@@ -11,14 +11,17 @@ const QRAccessPage = () => {
     useEffect(() => {
         const validateHash = async () => {
             try {
+                console.log('Validando hash:', hash);
                 const response = await qrService.validateQR(hash);
+                console.log('Respuesta del backend:', response);
                 if (response?.isValid) {
                     setFeature(response.feature || 'Acceso exclusivo');
                     setStatus('valid');
                 } else {
                     setStatus('invalid');
                 }
-            } catch {
+            } catch (error) {
+                console.error('Error al validar el hash:', error);
                 setStatus('invalid');
             }
         };
