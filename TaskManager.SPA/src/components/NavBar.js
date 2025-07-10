@@ -3,16 +3,18 @@ import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faTasks, 
-  faHome, 
-  faProjectDiagram, 
-  faQrcode, 
-  faSignInAlt, 
-  faUserPlus, 
-  faUser, 
-  faSignOutAlt 
+import {
+  faTasks,
+  faHome,
+  faProjectDiagram,
+  faQrcode,
+  faSignInAlt,
+  faUserPlus,
+  faUser,
+  faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
+// Importa el logo (ajusta la ruta si es necesario)
+import mapacheIco from './mapacheIco.png'; // o .svg según corresponda
 
 const NavBar = () => {
   const { user, logout } = useAuth();
@@ -24,13 +26,29 @@ const NavBar = () => {
   };
 
   return (
-    <Navbar bg="primary" variant="dark" expand="lg" className="shadow-sm">
+    <Navbar
+      variant="dark"
+      expand="lg"
+      className="shadow-sm"
+      style={{ backgroundColor: '#00757F' }}
+    >
+      <img
+        src={mapacheIco}
+        alt="Logo"
+        style={{
+          width: '60px',       // O usa 'auto' para mantener proporción
+          objectFit: 'contain',
+          verticalAlign: 'middle'
+        }}
+        className="d-inline-block align-top"
+      />
       <Container>
         <Navbar.Brand as={Link} to="/">
-          <FontAwesomeIcon icon={faTasks} className="me-2" />
-          TaskManager
+          {/* Logo a la izquierda */}
+
+          mApache Manager
         </Navbar.Brand>
-        
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -38,7 +56,7 @@ const NavBar = () => {
               <FontAwesomeIcon icon={faHome} className="me-1" />
               Inicio
             </Nav.Link>
-            
+
             {user && (
               <>
                 <Nav.Link as={Link} to="/projects">
@@ -56,16 +74,16 @@ const NavBar = () => {
               </>
             )}
           </Nav>
-          
+
           <Nav>
             {user ? (
-              <NavDropdown 
+              <NavDropdown
                 title={
                   <>
                     <FontAwesomeIcon icon={faUser} className="me-1" />
                     {user.name}
                   </>
-                } 
+                }
                 id="basic-nav-dropdown"
               >
                 <NavDropdown.Item onClick={handleLogout}>
