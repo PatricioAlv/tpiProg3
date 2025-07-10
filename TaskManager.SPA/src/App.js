@@ -17,17 +17,12 @@ import QRGenerate from './pages/QRGenerate';
 import QRAccessPage from './pages/QRAccessPage';
 import ExclusiveQuestion from './pages/ExclusiveQuestion';
 import ProtectedRoute from './components/ProtectedRoute';
-<<<<<<< HEAD
-import ForgotPassword from './pages/auth/ForgotPassword';
-import ResetPassword from './pages/auth/ResetPassword';
-import { useAuth } from './contexts/AuthContext';
-=======
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 // import { useAuth } from './contexts/AuthContext'; // No se usa en este componente
->>>>>>> 11606040163cd3c5cf7816ddcad9a9e158994543
 
 function App() {
   // const { user } = useAuth(); // No se usa en este componente
-
   return (
     <div className="App">
       <NavBar />
@@ -36,9 +31,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* TODO: Implementar componentes ForgotPassword y ResetPassword */}
-          {/* <Route path="/auth/ForgotPassword" element={<ForgotPassword />} />
-          <Route path="/auth/ResetPassword" element={<ResetPassword />} /> */}
+          {/* Rutas para recuperación de contraseña */}
+          <Route path="/auth/ForgotPassword" element={<ForgotPassword />} />
+          <Route path="/auth/ResetPassword" element={<ResetPassword />} />
 
           {/* Protected Routes */}
           <Route path="/projects" element={
