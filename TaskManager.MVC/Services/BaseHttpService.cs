@@ -25,10 +25,6 @@ namespace TaskManager.MVC.Services
                 // Obtener el token JWT desde los claims
                 var jwtToken = context.User.FindFirst("jwt_token")?.Value;
 
-                Console.WriteLine($"[DEBUG] User authenticated: {context.User.Identity.IsAuthenticated}");
-                Console.WriteLine($"[DEBUG] JWT Token found: {!string.IsNullOrEmpty(jwtToken)}");
-                Console.WriteLine($"[DEBUG] JWT Token: {jwtToken?.Substring(0, Math.Min(50, jwtToken.Length))}...");
-
                 if (!string.IsNullOrEmpty(jwtToken))
                 {
                     // Limpiar headers anteriores
@@ -38,16 +34,7 @@ namespace TaskManager.MVC.Services
                     
                     // Añadir el token JWT como Bearer token
                     _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {jwtToken}");
-                    Console.WriteLine($"[DEBUG] Authorization header set");
                 }
-                else
-                {
-                    Console.WriteLine($"[DEBUG] No JWT token found in claims");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"[DEBUG] User not authenticated");
             }
             return Task.CompletedTask;
         }

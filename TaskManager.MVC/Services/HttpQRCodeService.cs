@@ -11,19 +11,26 @@ namespace TaskManager.MVC.Services
 
         public async Task<string> GenerateQRCodeAsync(string data)
         {
-            var requestData = new { data };
-            var result = await PostAsync<dynamic>("/api/qr/generate", requestData);
-            
-            // Extraer el código QR del resultado
-            if (result != null)
+            try
             {
-                // Intentar obtener la propiedad qrCode del resultado
-                var resultJson = System.Text.Json.JsonSerializer.Serialize(result);
-                var jsonDoc = System.Text.Json.JsonDocument.Parse(resultJson);
-                if (jsonDoc.RootElement.TryGetProperty("qrCode", out System.Text.Json.JsonElement qrCodeElement))
+                var requestData = new { data };
+                var result = await PostAsync<object>("/api/qr/generate", requestData);
+                
+                // Extraer el código QR del resultado
+                if (result != null)
                 {
-                    return qrCodeElement.GetString() ?? string.Empty;
+                    // Intentar obtener la propiedad qrCode del resultado
+                    var resultJson = System.Text.Json.JsonSerializer.Serialize(result);
+                    var jsonDoc = System.Text.Json.JsonDocument.Parse(resultJson);
+                    if (jsonDoc.RootElement.TryGetProperty("qrCode", out System.Text.Json.JsonElement qrCodeElement))
+                    {
+                        return qrCodeElement.GetString() ?? string.Empty;
+                    }
                 }
+            }
+            catch
+            {
+                // En caso de error, retornar string vacío
             }
             
             return string.Empty;
@@ -45,17 +52,24 @@ namespace TaskManager.MVC.Services
 
         public async Task<string> GenerateSecureQRCodeAsync(int userId, string purpose)
         {
-            var requestData = new { userId, purpose };
-            var result = await PostAsync<dynamic>("/api/qr/secure", requestData);
-            
-            if (result != null)
+            try
             {
-                var resultJson = System.Text.Json.JsonSerializer.Serialize(result);
-                var jsonDoc = System.Text.Json.JsonDocument.Parse(resultJson);
-                if (jsonDoc.RootElement.TryGetProperty("qrCode", out System.Text.Json.JsonElement qrCodeElement))
+                var requestData = new { Purpose = purpose };
+                var result = await PostAsync<object>("/api/qr/generate", requestData);
+                
+                if (result != null)
                 {
-                    return qrCodeElement.GetString() ?? string.Empty;
+                    var resultJson = System.Text.Json.JsonSerializer.Serialize(result);
+                    var jsonDoc = System.Text.Json.JsonDocument.Parse(resultJson);
+                    if (jsonDoc.RootElement.TryGetProperty("qrCode", out System.Text.Json.JsonElement qrCodeElement))
+                    {
+                        return qrCodeElement.GetString() ?? string.Empty;
+                    }
                 }
+            }
+            catch
+            {
+                // En caso de error en la deserialización, devolver string vacío
             }
             
             return string.Empty;
@@ -65,7 +79,7 @@ namespace TaskManager.MVC.Services
         {
             try
             {
-                var result = await GetAsync<object>($"/api/qr/secure/validate?hash={Uri.EscapeDataString(hash)}");
+                var result = await GetAsync<object>($"/api/qr/validate?hash={Uri.EscapeDataString(hash)}");
                 return result != null;
             }
             catch
