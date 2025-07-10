@@ -95,7 +95,7 @@ const Tasks = () => {
     return (
         <Container fluid className="fade-in">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1>
+                <h1 style={{ color: "#00757F" }}>
                     <FontAwesomeIcon icon={faTasks} className="me-2" />
                     Todas las Tareas
                 </h1>
@@ -117,14 +117,27 @@ const Tasks = () => {
                 <Row className="g-4">
                     {tasks.map(task => (
                         <Col md={6} lg={4} key={task.id}>
-                            <Card className="h-100">
-                                <Card.Header className="d-flex justify-content-between align-items-center">
+                            <Card className="h-100" style={{ borderColor: "#08D9CD" }}>
+                                <Card.Header
+                                    className="d-flex justify-content-between align-items-center"
+                                    style={{
+                                        backgroundColor: "#00757F",
+                                        color: "#fff",
+                                        borderBottom: "3px solid #08D9CD",
+                                    }}
+                                >
                                     <h6 className="mb-0">{task.title}</h6>
-                                    <Badge bg={getStatusBadgeVariant(task.status)}>
+                                    <Badge
+                                        style={{
+                                            backgroundColor: task.status === 1 ? "#08D9CD" : undefined,
+                                            color: task.status === 1 ? "#00757F" : undefined,
+                                        }}
+                                        bg={getStatusBadgeVariant(task.status)}
+                                    >
                                         {getStatusDisplayName(task.status)}
                                     </Badge>
                                 </Card.Header>
-                                <Card.Body>
+                                <Card.Body style={{ backgroundColor: "#f8f9fa" }}>
                                     <Card.Text className="text-muted mb-3">
                                         {task.description}
                                     </Card.Text>
@@ -162,8 +175,19 @@ const Tasks = () => {
                                     )}
 
                                     <div className="d-flex justify-content-between align-items-center">
-                                        <Badge 
-                                            bg={getPriorityBadgeVariant(task.priority)}
+                                        <Badge
+                                            style={{
+                                                backgroundColor:
+                                                    task.priority === 1
+                                                        ? "#08D9CD"
+                                                        : task.priority === 2
+                                                        ? "#ff4d4f"
+                                                        : "#43a047",
+                                                color:
+                                                    task.priority === 1
+                                                        ? "#00757F"
+                                                        : "#fff",
+                                            }}
                                             className="d-flex align-items-center"
                                         >
                                             <FontAwesomeIcon icon={faFlag} className="me-1" />

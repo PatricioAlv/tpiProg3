@@ -3,14 +3,15 @@ import { Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faProjectDiagram, 
-  faTasks, 
-  faQrcode, 
-  faPlus, 
-  faSignInAlt, 
-  faUserPlus 
+import {
+  faProjectDiagram,
+  faTasks,
+  faQrcode,
+  faPlus,
+  faSignInAlt,
+  faUserPlus
 } from '@fortawesome/free-solid-svg-icons';
+import mapacheIco from '../components/mapacheIco.png'; // o .svg según corresponda
 
 const Home = () => {
   const { user } = useAuth();
@@ -20,12 +21,22 @@ const Home = () => {
       <div className="hero-section">
         <h1 className="display-4 fw-bold mb-4">
           <FontAwesomeIcon icon={faTasks} className="me-3" />
-          TaskManager SPA
+          mApache Task Manager
         </h1>
+        <img
+          src={mapacheIco}
+          alt="Logo"
+          style={{
+            width: '200px',       // O usa 'auto' para mantener proporción
+            objectFit: 'contain',
+            verticalAlign: 'middle'
+          }}
+          className="d-inline-block align-top"
+        />
         <p className="lead mb-4">
           Sistema de gestión de tareas y proyectos de programación
         </p>
-        
+
         {!user ? (
           <div className="d-grid gap-2 d-md-flex justify-content-md-center">
             <Button as={Link} to="/register" variant="light" size="lg" className="me-md-2">
@@ -68,7 +79,7 @@ const Home = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="h-100">
             <Card.Body>
@@ -82,7 +93,7 @@ const Home = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="h-100">
             <Card.Body>

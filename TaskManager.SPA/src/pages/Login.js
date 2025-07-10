@@ -41,19 +41,26 @@ const Login = () => {
   return (
     <Row className="justify-content-center fade-in">
       <Col md={6}>
-        <Card>
-          <Card.Header className="text-center">
+        <Card style={{ borderColor: '#08D9CD' }}>
+          <Card.Header
+            className="text-center"
+            style={{
+              backgroundColor: '#00757F',
+              color: '#fff',
+              borderBottom: '4px solid #08D9CD'
+            }}
+          >
             <h3>
               <FontAwesomeIcon icon={faSignInAlt} className="me-2" />
               Iniciar Sesión
             </h3>
           </Card.Header>
-          <Card.Body>
+          <Card.Body style={{ backgroundColor: '#f8f9fa' }}>
             {error && <Alert variant="danger">{error}</Alert>}
-            
+
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3">
-                <Form.Label>
+                <Form.Label style={{ color: '#00757F' }}>
                   <FontAwesomeIcon icon={faEnvelope} className="me-2" />
                   Email
                 </Form.Label>
@@ -64,11 +71,12 @@ const Login = () => {
                   onChange={handleChange}
                   placeholder="tu@email.com"
                   required
+                  style={{ borderColor: '#08D9CD' }}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>
+                <Form.Label style={{ color: '#00757F' }}>
                   <FontAwesomeIcon icon={faLock} className="me-2" />
                   Contraseña
                 </Form.Label>
@@ -79,11 +87,20 @@ const Login = () => {
                   onChange={handleChange}
                   placeholder="Tu contraseña"
                   required
+                  style={{ borderColor: '#08D9CD' }}
                 />
               </Form.Group>
 
               <div className="d-grid gap-2">
-                <Button type="submit" variant="primary" disabled={loading}>
+                <Button
+                  type="submit"
+                  style={{
+                    backgroundColor: '#00757F',
+                    borderColor: '#08D9CD',
+                    color: '#fff'
+                  }}
+                  disabled={loading}
+                >
                   {loading ? 'Iniciando sesión...' : (
                     <>
                       <FontAwesomeIcon icon={faSignInAlt} className="me-2" />
@@ -95,17 +112,26 @@ const Login = () => {
             </Form>
 
             <div className="text-center mt-3">
-              <small>
+              <small style={{ color: '#00757F' }}>
                 <FontAwesomeIcon icon={faKey} className="me-1" />
                 ¿Olvidaste tu contraseña?
               </small>
             </div>
 
-            <hr />
+            <hr style={{ borderTop: '2px solid #08D9CD' }} />
 
             <div className="text-center">
-              <p>¿No tienes una cuenta?</p>
-              <Button as={Link} to="/register" variant="outline-primary">
+              <p style={{ color: '#00757F' }}>¿No tienes una cuenta?</p>
+              <Button
+                as={Link}
+                to="/register"
+                style={{
+                  backgroundColor: '#08D9CD',
+                  borderColor: '#00757F',
+                  color: '#00757F'
+                }}
+                variant="outline-primary"
+              >
                 <FontAwesomeIcon icon={faUserPlus} className="me-2" />
                 Registrarse
               </Button>

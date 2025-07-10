@@ -43,14 +43,15 @@ const Projects = () => {
     }
   };
 
+  // Cambia los colores de los badges de estado para usar los colores pedidos
   const getStatusBadgeVariant = (status) => {
     switch (status) {
-      case 0: return 'secondary'; // Planning
-      case 1: return 'primary';   // InProgress
-      case 2: return 'success';   // Completed
-      case 3: return 'warning';   // OnHold
-      case 4: return 'danger';    // Cancelled
-      default: return 'secondary';
+      case 0: return "secondary"; // Planning
+      case 1: return "custom-primary"; // En Progreso
+      case 2: return "success"; // Completado
+      case 3: return "warning"; // En Pausa
+      case 4: return "danger"; // Cancelado
+      default: return "secondary";
     }
   };
 
@@ -86,11 +87,18 @@ const Projects = () => {
   return (
     <div className="fade-in">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>
+        <h1 style={{ color: "#00757F" }}>
           <FontAwesomeIcon icon={faProjectDiagram} className="me-2" />
           Mis Proyectos
         </h1>
-        <Button as={Link} to="/projects/create" variant="primary">
+        <Button
+          as={Link}
+          to="/projects/create"
+          style={{
+            backgroundColor: "#00757F",
+            color: "#fff",
+          }}
+        >
           <FontAwesomeIcon icon={faPlus} className="me-2" />
           Nuevo Proyecto
         </Button>
@@ -106,19 +114,43 @@ const Projects = () => {
         <Row className="g-4">
           {projects.map((project) => (
             <Col md={6} lg={4} key={project.id}>
-              <Card className="h-100">
-                <Card.Header className="d-flex justify-content-between align-items-center">
+              <Card
+                className="h-100"
+                style={{
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                }}
+              >
+                <Card.Header
+                  className="d-flex justify-content-between align-items-center"
+                  style={{
+                    backgroundColor: "#00757F",
+                    color: "#fff",
+                    borderBottom: "3px solid #08D9CD",
+                  }}
+                >
                   <h5 className="mb-0">{project.name}</h5>
-                  <Badge bg={getStatusBadgeVariant(project.status)}>
+                  <Badge
+                    style={{
+                      backgroundColor:
+                        project.status === 1
+                          ? "#08D9CD"
+                          : undefined,
+                      color:
+                        project.status === 1
+                          ? "#00757F"
+                          : undefined,
+                    }}
+                    bg={getStatusBadgeVariant(project.status)}
+                  >
                     {getStatusDisplayName(project.status)}
                   </Badge>
                 </Card.Header>
-                <Card.Body>
+                <Card.Body style={{ backgroundColor: "#f8f9fa" }}>
                   <Card.Text>{project.description}</Card.Text>
                   <div className="row text-muted small">
                     <div className="col-6">
                       <FontAwesomeIcon icon={faCalendar} className="me-1" />
-                      {new Date(project.createdAt).toLocaleDateString('es-ES')}
+                      {new Date(project.createdAt).toLocaleDateString("es-ES")}
                     </div>
                     <div className="col-6">
                       <FontAwesomeIcon icon={faTasks} className="me-1" />
@@ -129,7 +161,8 @@ const Projects = () => {
                     <div className="mt-2">
                       <small className="text-muted">
                         <FontAwesomeIcon icon={faClock} className="me-1" />
-                        Vence: {new Date(project.dueDate).toLocaleDateString('es-ES')}
+                        Vence:{" "}
+                        {new Date(project.dueDate).toLocaleDateString("es-ES")}
                       </small>
                     </div>
                   )}
@@ -140,37 +173,57 @@ const Projects = () => {
                     </small>
                   </div>
                 </Card.Body>
-                <Card.Footer>
+                <Card.Footer
+                  style={{
+                    backgroundColor: "#08D9CD",
+                    borderTop: "2px solid #00757F",
+                  }}
+                >
                   <div className="btn-group w-100" role="group">
-                    <Button 
-                      as={Link} 
-                      to={`/projects/${project.id}`} 
-                      variant="outline-primary" 
+                    <Button
+                      as={Link}
+                      to={`/projects/${project.id}`}
+                      style={{
+                        color: "#00757F",
+                        backgroundColor: "#fff",
+                      }}
                       size="sm"
                     >
                       <FontAwesomeIcon icon={faEye} className="me-1" />
                       Ver
                     </Button>
-                    <Button 
-                      as={Link} 
-                      to={`/projects/${project.id}/edit`} 
-                      variant="outline-secondary" 
+                    <Button
+                      as={Link}
+                      to={`/projects/${project.id}/edit`}
+                      style={{
+                        color: "#08D9CD",
+                        backgroundColor: "#fff",
+                      }}
                       size="sm"
                     >
                       <FontAwesomeIcon icon={faEdit} className="me-1" />
                       Editar
                     </Button>
-                    <Button 
-                      variant="outline-danger" 
+                    <Button
                       size="sm"
+                      style={{
+                        backgroundColor: "#fff",
+                        color: "#ff4d4f",       // rojo para el texto/ícono
+                      }}
                       disabled={deletingProjectId === project.id}
-                      onClick={() => handleDeleteProject(project.id, project.name)}
+                      onClick={() =>
+                        handleDeleteProject(project.id, project.name)
+                      }
                     >
-                      <FontAwesomeIcon 
-                        icon={deletingProjectId === project.id ? faClock : faTrash} 
-                        className="me-1" 
+                      <FontAwesomeIcon
+                        icon={
+                          deletingProjectId === project.id ? faClock : faTrash
+                        }
+                        className="me-1"
                       />
-                      {deletingProjectId === project.id ? 'Eliminando...' : 'Eliminar'}
+                      {deletingProjectId === project.id
+                        ? "Eliminando..."
+                        : "Eliminar"}
                     </Button>
                   </div>
                 </Card.Footer>
@@ -179,11 +232,21 @@ const Projects = () => {
           ))}
         </Row>
       ) : (
-        <div className="empty-state">
-          <FontAwesomeIcon icon={faProjectDiagram} />
-          <h3>No tienes proyectos aún</h3>
+        <div className="empty-state text-center">
+          <FontAwesomeIcon
+            icon={faProjectDiagram}
+            style={{ color: "#08D9CD", fontSize: "2rem" }}
+          />
+          <h3 style={{ color: "#00757F" }}>No tienes proyectos aún</h3>
           <p>¡Crea tu primer proyecto para comenzar!</p>
-          <Button as={Link} to="/projects/create" variant="primary">
+          <Button
+            as={Link}
+            to="/projects/create"
+            style={{
+              backgroundColor: "#00757F",
+              color: "#fff",
+            }}
+          >
             <FontAwesomeIcon icon={faPlus} className="me-2" />
             Crear Primer Proyecto
           </Button>

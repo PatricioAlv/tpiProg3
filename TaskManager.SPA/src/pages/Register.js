@@ -60,19 +60,26 @@ const Register = () => {
   return (
     <Row className="justify-content-center fade-in">
       <Col md={6}>
-        <Card>
-          <Card.Header className="text-center">
+        <Card style={{ borderColor: '#08D9CD' }}>
+          <Card.Header
+            className="text-center"
+            style={{
+              backgroundColor: '#00757F',
+              color: '#fff',
+              borderBottom: `4px solid #08D9CD`
+            }}
+          >
             <h3>
               <FontAwesomeIcon icon={faUserPlus} className="me-2" />
               Registrarse
             </h3>
           </Card.Header>
-          <Card.Body>
+          <Card.Body style={{ backgroundColor: '#f8f9fa' }}>
             {error && <Alert variant="danger">{error}</Alert>}
-            
+
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3">
-                <Form.Label>
+                <Form.Label style={{ color: '#00757F' }}>
                   <FontAwesomeIcon icon={faUser} className="me-2" />
                   Nombre Completo
                 </Form.Label>
@@ -83,11 +90,12 @@ const Register = () => {
                   onChange={handleChange}
                   placeholder="Tu nombre completo"
                   required
+                  style={{ borderColor: '#08D9CD' }}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>
+                <Form.Label style={{ color: '#00757F' }}>
                   <FontAwesomeIcon icon={faEnvelope} className="me-2" />
                   Email
                 </Form.Label>
@@ -98,11 +106,12 @@ const Register = () => {
                   onChange={handleChange}
                   placeholder="tu@email.com"
                   required
+                  style={{ borderColor: '#08D9CD' }}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>
+                <Form.Label style={{ color: '#00757F' }}>
                   <FontAwesomeIcon icon={faLock} className="me-2" />
                   Contraseña
                 </Form.Label>
@@ -113,11 +122,12 @@ const Register = () => {
                   onChange={handleChange}
                   placeholder="Mínimo 6 caracteres"
                   required
+                  style={{ borderColor: '#08D9CD' }}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>
+                <Form.Label style={{ color: '#00757F' }}>
                   <FontAwesomeIcon icon={faLock} className="me-2" />
                   Confirmar Contraseña
                 </Form.Label>
@@ -128,11 +138,20 @@ const Register = () => {
                   onChange={handleChange}
                   placeholder="Confirma tu contraseña"
                   required
+                  style={{ borderColor: '#08D9CD' }}
                 />
               </Form.Group>
 
               <div className="d-grid gap-2">
-                <Button type="submit" variant="primary" disabled={loading}>
+                <Button
+                  type="submit"
+                  style={{
+                    backgroundColor: '#00757F',
+                    borderColor: '#08D9CD',
+                    color: '#fff'
+                  }}
+                  disabled={loading}
+                >
                   {loading ? 'Registrando...' : (
                     <>
                       <FontAwesomeIcon icon={faUserPlus} className="me-2" />
@@ -143,11 +162,20 @@ const Register = () => {
               </div>
             </Form>
 
-            <hr />
+            <hr style={{ borderTop: '2px solid #08D9CD' }} />
 
             <div className="text-center">
-              <p>¿Ya tienes una cuenta?</p>
-              <Button as={Link} to="/login" variant="outline-primary">
+              <p style={{ color: '#00757F', border: 'none' }}>¿Ya tienes una cuenta?</p>
+              <Button
+                as={Link}
+                to="/login"
+                style={{
+                  backgroundColor: '#08D9CD',
+                  borderColor: '#00757F',
+                  color: '#00757F'
+                }}
+                variant="outline-primary"
+              >
                 <FontAwesomeIcon icon={faSignInAlt} className="me-2" />
                 Iniciar Sesión
               </Button>
