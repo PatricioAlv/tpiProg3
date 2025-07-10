@@ -24,9 +24,11 @@ namespace TaskManager.MVC.Controllers
         public async Task<IActionResult> Generate()
         {
             var userId = GetCurrentUserId();
-            var qrCode = await _qrCodeService.GenerateSecureQRCodeAsync(userId, "exclusive_access");
+            var qrCode = await _qrCodeService.GenerateSecureQRCodeAsync(userId, "net_question_exclusive");
             
             ViewBag.QRCode = qrCode;
+            ViewBag.Description = "Código QR para acceder a preguntas exclusivas sobre .NET";
+            ViewBag.Instructions = "Escanea este código QR para acceder a una pregunta exclusiva sobre .NET que cambia cada hora.";
             return View();
         }
 

@@ -87,5 +87,56 @@ namespace TaskManager.MVC.Services
                 return false;
             }
         }
+
+        public async Task<NetQuestionResponse> GetExclusiveQuestionAsync(string hash)
+        {
+            try
+            {
+                var result = await GetAsync<NetQuestionResponse>($"/api/qr/exclusive-question?hash={Uri.EscapeDataString(hash)}");
+                return result ?? new NetQuestionResponse();
+            }
+            catch
+            {
+                throw new UnauthorizedAccessException("No se pudo obtener la pregunta exclusiva");
+            }
+        }
+
+        public async Task<AnswerResponse> SubmitAnswerAsync(string hash, string answer)
+        {
+            try
+            {
+                var requestData = new { QrHash = hash, Answer = answer };
+                var result = await PostAsync<AnswerResponse>("/api/qr/submit-answer", requestData);
+                return result ?? new AnswerResponse();
+            }
+            catch
+            {
+                throw new UnauthorizedAccessException("No se pudo enviar la respuesta");
+            }
+        }
+    }
+
+    public class NetQuestionResponse
+    {
+        public string Message { get; set; } = string.Empty;
+        public DateTime AccessedAt { get; set; }
+        public NetQuestionData Question { get; set; } = new();
+        public string Instructions { get; set; } = string.Empty;
+    }
+
+    public class NetQuestionData
+    {
+        public int Id { get; set; }
+        public string Question { get; set; } = string.Empty;
+        public string[] Options { get; set; } = Array.Empty<string>();
+        public int Hour { get; set; }
+        public DateTime ExpiresAt { get; set; }
+    }
+
+    public class AnswerResponse
+    {
+        public bool IsCorrect { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public DateTime Timestamp { get; set; }
     }
 }

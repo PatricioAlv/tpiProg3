@@ -14,7 +14,8 @@ import TaskDetail from './pages/TaskDetail';
 import CreateTask from './pages/CreateTask';
 import EditTask from './pages/EditTask';
 import QRGenerate from './pages/QRGenerate';
-import QRAccessPage from './pages/QRAccessPage'; // ← asegurate de importar esto
+import QRAccessPage from './pages/QRAccessPage';
+import ExclusiveQuestion from './pages/ExclusiveQuestion';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
 
@@ -85,6 +86,7 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/qr-access/:hash" element={<QRAccessPage />} />
+          <Route path="/exclusive/:hash" element={<ExclusiveQuestion />} />
         </Routes>
       </Container>
     </div>
