@@ -11,5 +11,6 @@ namespace TaskManager.API.Services
         Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
         Task<UserDto?> GetUserByIdAsync(int userId);
         Task<List<UserDto>> GetAllUsersAsync();
+        Task<bool> SendPasswordResetEmailAsync(string email);
     }
 }

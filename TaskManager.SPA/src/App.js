@@ -30,6 +30,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/auth/ForgotPassword" element={<ForgotPassword />} />
+          <Route path="/auth/ResetPassword" element={<ResetPassword />} />
 
           {/* Protected Routes */}
           <Route path="/projects" element={
