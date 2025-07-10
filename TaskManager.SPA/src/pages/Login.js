@@ -114,7 +114,7 @@ const Login = () => {
             <div className="text-center mt-3">
               <small style={{ color: '#00757F' }}>
                 <FontAwesomeIcon icon={faKey} className="me-1" />
-                <Link to="/auth/ForgotPassword" style={{ color: '#00757F', textDecoration: 'none' }}>
+                <Link to="/auth/forgot-password" style={{ color: '#00757F', textDecoration: 'none' }}>
                   ¿Olvidaste tu contraseña?
                 </Link>
               </small>

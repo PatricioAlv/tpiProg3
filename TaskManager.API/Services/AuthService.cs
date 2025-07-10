@@ -109,18 +109,60 @@ namespace TaskManager.API.Services
 
         public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.ResetToken == resetPasswordDto.Token &&
+            User? user = null;
+
+            // Intentar primero con token de backend (GUID)
+            user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == resetPasswordDto.Email &&
+                                          u.ResetToken == resetPasswordDto.Token &&
                                           u.ResetTokenExpiry > DateTime.UtcNow);
+
+            // Si no se encuentra con token de backend, verificar si es token de frontend
+            if (user == null)
+            {
+                try
+                {
+                    // Intentar decodificar como token de frontend (base64)
+                    var decodedData = System.Text.Json.JsonSerializer.Deserialize<dynamic>(
+                        Convert.FromBase64String(resetPasswordDto.Token));
+                    
+                    // Verificar que el email coincida y que no haya expirado (1 hora)
+                    if (decodedData != null)
+                    {
+                        var tokenData = decodedData.GetProperty("email").GetString();
+                        var timestamp = decodedData.GetProperty("timestamp").GetInt64();
+                        
+                        if (tokenData == resetPasswordDto.Email)
+                        {
+                            var tokenAge = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - timestamp;
+                            var oneHour = 60 * 60 * 1000; // 1 hora en milisegundos
+                            
+                            if (tokenAge <= oneHour)
+                            {
+                                // Token de frontend válido, buscar usuario por email
+                                user = await _context.Users
+                                    .FirstOrDefaultAsync(u => u.Email == resetPasswordDto.Email);
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Si no se puede decodificar, continuar con la lógica normal
+                }
+            }
 
             if (user == null)
             {
                 return false;
             }
 
+            // Actualizar contraseña
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(resetPasswordDto.Password, salt);
             user.Salt = salt;
+            
+            // Limpiar tokens de reset si existen
             user.ResetToken = null;
             user.ResetTokenExpiry = null;
 

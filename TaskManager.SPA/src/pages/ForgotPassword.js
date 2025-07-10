@@ -1,28 +1,54 @@
 import React, { useState } from 'react';
 import { Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 import { authService } from '../services/apiService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faArrowLeft, faPaperPlane, faKey } from '@fortawesome/free-solid-svg-icons';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [emailSent, setEmailSent] = useState(false);
+  const [resetLink, setResetLink] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setSuccess('');
+    setMessage('');
 
     try {
-      await authService.sendPasswordResetEmail(email);
-      setSuccess('Se ha enviado un enlace de recuperación a tu correo electrónico.');
+      await authService.forgotPassword(email);
+      setEmailSent(true);
+      
+      // Generar un token único basado en timestamp y datos del email
+      const tokenData = btoa(JSON.stringify({
+        email: email,
+        timestamp: Date.now(),
+        random: Math.random().toString(36).substr(2, 9)
+      }));
+      
+      const generatedResetLink = `${window.location.origin}/auth/reset-password?token=${tokenData}`;
+      setResetLink(generatedResetLink);
+      
+      // Mostrar el enlace en la consola para desarrollo
+      console.log('='.repeat(70));
+      console.log('🔐 ENLACE DE RECUPERACIÓN DE CONTRASEÑA');
+      console.log('='.repeat(70));
+      console.log('📧 Email:', email);
+      console.log('🔗 Enlace de recuperación:');
+      console.log(generatedResetLink);
+      console.log('='.repeat(70));
+      console.log('⚠️  Este enlace es válido por 1 hora');
+      console.log('🔄 Copia y pega el enlace en tu navegador para cambiar tu contraseña');
+      console.log('='.repeat(70));
+      
+      setMessage('Se ha generado un enlace de recuperación. Revisa más abajo para acceder al enlace.');
+      
     } catch (error) {
-      setError('Error al enviar el correo de recuperación. Verifica tu email.');
+      setError(error.response?.data?.message || 'Error al enviar el email de recuperación');
     } finally {
       setLoading(false);
     }
@@ -47,38 +73,91 @@ const ForgotPassword = () => {
           </Card.Header>
           <Card.Body style={{ backgroundColor: '#f8f9fa' }}>
             {error && <Alert variant="danger">{error}</Alert>}
-            {success && <Alert variant="success">{success}</Alert>}
+            {message && <Alert variant="success">{message}</Alert>}
 
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3">
-                <Form.Label style={{ color: '#00757F' }}>
-                  <FontAwesomeIcon icon={faEnvelope} className="me-2" />
-                  Email
-                </Form.Label>
-                <Form.Control
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
-                  required
-                  style={{ borderColor: '#08D9CD' }}
-                />
-              </Form.Group>
+            {!emailSent ? (
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ color: '#00757F' }}>
+                    <FontAwesomeIcon icon={faEnvelope} className="me-2" />
+                    Email
+                  </Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="tu@email.com"
+                    required
+                    style={{ borderColor: '#08D9CD' }}
+                  />
+                </Form.Group>
 
-              <div className="d-grid gap-2">
+                <div className="d-grid gap-2">
+                  <Button
+                    type="submit"
+                    style={{
+                      backgroundColor: '#00757F',
+                      borderColor: '#08D9CD',
+                      color: '#fff'
+                    }}
+                    disabled={loading}
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} className="me-2" />
+                    {loading ? 'Enviando...' : 'Enviar Enlace de Recuperación'}
+                  </Button>
+                </div>
+              </Form>
+            ) : (
+              <div className="text-center">
+                <Alert variant="info">
+                  <FontAwesomeIcon icon={faKey} className="me-2" />
+                  <strong>Enlace de recuperación generado</strong>
+                  <br />
+                  Usa el siguiente enlace para cambiar tu contraseña:
+                </Alert>
+                
+                <div className="mb-3 p-3" style={{ backgroundColor: '#e3f2fd', borderRadius: '8px', border: '1px solid #08D9CD' }}>
+                  <small className="text-muted">Enlace de recuperación:</small>
+                  <div style={{ wordBreak: 'break-all', fontSize: '0.9em', color: '#00757F' }}>
+                    <a href={resetLink} target="_blank" rel="noopener noreferrer" style={{ color: '#00757F' }}>
+                      {resetLink}
+                    </a>
+                  </div>
+                </div>
+                
                 <Button
-                  type="submit"
+                  href={resetLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{
                     backgroundColor: '#00757F',
                     borderColor: '#08D9CD',
                     color: '#fff'
                   }}
-                  disabled={loading}
+                  className="mb-3"
                 >
-                  {loading ? 'Enviando...' : 'Enviar Enlace de Recuperación'}
+                  <FontAwesomeIcon icon={faKey} className="me-2" />
+                  Abrir Enlace de Recuperación
                 </Button>
+                
+                <div className="text-muted">
+                  <small>
+                    <FontAwesomeIcon icon={faEnvelope} className="me-2" />
+                    También puedes revisar la consola del navegador (F12) para ver el enlace completo.
+                  </small>
+                </div>
               </div>
-            </Form>
+            )}
+
+            <div className="text-center mt-3">
+              <Link 
+                to="/auth/login" 
+                style={{ color: '#00757F', textDecoration: 'none' }}
+              >
+                <FontAwesomeIcon icon={faArrowLeft} className="me-2" />
+                Volver al inicio de sesión
+              </Link>
+            </div>
           </Card.Body>
         </Card>
       </Col>

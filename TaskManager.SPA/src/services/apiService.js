@@ -38,6 +38,11 @@ export const projectService = {
     return response.data;
   },
 
+  getProjectsPaginated: async (page = 1, pageSize = 6) => {
+    const response = await apiClient.get(`/projects/paginated?page=${page}&pageSize=${pageSize}`);
+    return response.data;
+  },
+
   getProjectById: async (id) => {
     const response = await apiClient.get(`/projects/${id}`);
     return response.data;
