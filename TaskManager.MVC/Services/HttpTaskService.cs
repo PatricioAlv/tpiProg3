@@ -12,7 +12,7 @@ namespace TaskManager.MVC.Services
 
         public async Task<IEnumerable<TaskItemDto>> GetProjectTasksAsync(int projectId, int userId)
         {
-            var result = await GetAsync<IEnumerable<TaskItemDto>>($"/api/tasks/project/{projectId}");
+            var result = await GetAsync<IEnumerable<TaskItemDto>>($"/api/tasks/by-project/{projectId}");
             return result ?? new List<TaskItemDto>();
         }
 
@@ -39,8 +39,20 @@ namespace TaskManager.MVC.Services
 
         public async Task<PagedResultDto<TaskItemDto>> GetPagedTasksAsync(int projectId, int userId, int page, int pageSize)
         {
-            var result = await GetAsync<PagedResultDto<TaskItemDto>>($"/api/tasks/project/{projectId}/paged?page={page}&pageSize={pageSize}");
-            return result ?? new PagedResultDto<TaskItemDto>();
+            // Por ahora obtenemos todas las tareas del proyecto y aplicamos paginación en memoria
+            var allTasks = await GetProjectTasksAsync(projectId, userId);
+            var tasksList = allTasks.ToList();
+            
+            var totalCount = tasksList.Count;
+            var pagedTasks = tasksList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            
+            return new PagedResultDto<TaskItemDto>
+            {
+                Items = pagedTasks,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
         }
 
         public async Task<PagedResultDto<TaskItemDto>> GetTasksWithPaginationAsync(int userId, int page, int pageSize)

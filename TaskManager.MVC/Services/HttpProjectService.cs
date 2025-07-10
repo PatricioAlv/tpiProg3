@@ -12,7 +12,7 @@ namespace TaskManager.MVC.Services
 
         public async Task<IEnumerable<ProjectDto>> GetUserProjectsAsync(int userId)
         {
-            var result = await GetAsync<IEnumerable<ProjectDto>>($"/api/projects/user/{userId}");
+            var result = await GetAsync<IEnumerable<ProjectDto>>("/api/projects");
             return result ?? new List<ProjectDto>();
         }
 
