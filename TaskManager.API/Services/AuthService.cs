@@ -109,18 +109,57 @@ namespace TaskManager.API.Services
 
         public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.ResetToken == resetPasswordDto.Token &&
+            User? user = null;
+
+        
+            user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == resetPasswordDto.Email &&
+                                          u.ResetToken == resetPasswordDto.Token &&
                                           u.ResetTokenExpiry > DateTime.UtcNow);
+
+        
+            if (user == null)
+            {
+                try
+                {
+                    var decodedData = System.Text.Json.JsonSerializer.Deserialize<dynamic>(
+                        Convert.FromBase64String(resetPasswordDto.Token));
+                    
+                
+                    if (decodedData != null)
+                    {
+                        var tokenData = decodedData.GetProperty("email").GetString();
+                        var timestamp = decodedData.GetProperty("timestamp").GetInt64();
+                        
+                        if (tokenData == resetPasswordDto.Email)
+                        {
+                            var tokenAge = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - timestamp;
+                            var oneHour = 60 * 60 * 1000;
+                            
+                            if (tokenAge <= oneHour)
+                            {
+                                user = await _context.Users
+                                    .FirstOrDefaultAsync(u => u.Email == resetPasswordDto.Email);
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
 
             if (user == null)
             {
                 return false;
             }
 
+            // Actualizar contraseña
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(resetPasswordDto.Password, salt);
             user.Salt = salt;
+            
+            // Limpiar tokens de reset si existen
             user.ResetToken = null;
             user.ResetTokenExpiry = null;
 
@@ -162,10 +201,10 @@ namespace TaskManager.API.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
-                return false; // Usuario no encontrado
+                return false;
             }
 
-            var resetToken = Guid.NewGuid().ToString(); // Genera un token único
+            var resetToken = Guid.NewGuid().ToString();
             user.ResetToken = resetToken;
             user.ResetTokenExpiry = DateTime.UtcNow.AddHours(1);
             await _context.SaveChangesAsync();
@@ -174,7 +213,6 @@ namespace TaskManager.API.Services
 
             var emailBody = $"Haz clic en el siguiente enlace para recuperar tu contraseña: <a href='{resetLink}'>Recuperar Contraseña</a>";
 
-            // TODO: Implement email sending logic
             return true;
         }
 

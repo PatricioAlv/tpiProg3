@@ -20,29 +20,46 @@ body {
 }
 
 /* Header Styles */
+/* Navbar */
 .navbar {
-    background: linear-gradient(135deg, var(--primary-color), #0056b3) !important;
-    box-shadow: var(--box-shadow);
-    padding: 1rem 0;
+    background: linear-gradient(90deg, #6a11cb, #2575fc) !important;
+    padding: 1rem !important;
 }
 
 .navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
     color: white !important;
+    font-size: 1.5rem !important;
+    font-weight: bold !important;
 }
 
-.navbar-nav .nav-link {
-    color: rgba(255, 255, 255, 0.9) !important;
-    font-weight: 500;
-    transition: var(--transition);
-    padding: 0.5rem 1rem !important;
-    border-radius: var(--border-radius);
+.navbar-nav {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 2rem !important;
 }
 
-.navbar-nav .nav-link:hover {
+.nav-item {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.nav-link {
     color: white !important;
-    background-color: rgba(255, 255, 255, 0.1);
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    white-space: nowrap !important;
+}
+
+.nav-link:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transform: translateY(-2px);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
 /* Card Styles */
@@ -84,7 +101,10 @@ body {
     background: linear-gradient(135deg, var(--primary-color), #0056b3);
     border: none;
     box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
-}
+    color: white !important;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    display: inline-block;}
 
 .btn-primary:hover {
     background: linear-gradient(135deg, #0056b3, var(--primary-color));
@@ -287,29 +307,41 @@ body {
 }
 
 /* Pagination Styles */
-.pagination {
+.pagination-container {
     margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+}
+
+.pagination {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
     justify-content: center;
+    list-style-type: none;
+}
+
+.page-item {
+    margin: 0;
+    display: flex;
+    list-style-type: none;
 }
 
 .page-link {
-    color: var(--primary-color);
+    padding: 0.75rem 1rem;
+    border-radius: 8px !important;
     border: 1px solid #dee2e6;
-    padding: 0.5rem 1rem;
-    margin: 0 0.1rem;
-    border-radius: var(--border-radius);
-    transition: var(--transition);
+    color: #6a11cb;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    text-decoration: none;
 }
 
 .page-link:hover {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-.page-item.active .page-link {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: #f8f9fa;
+    color: #6a11cb;
+    border-color: #6a11cb;
+    transform: translateY(-2px);
 }
 
 /* Alert Styles */
@@ -363,16 +395,244 @@ body {
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
 }
-
-/* Footer Styles */
-footer {
-    background: linear-gradient(135deg, var(--dark-color), #495057);
-    color: white;
-    padding: 2rem 0;
-    margin-top: 3rem;
+.botonClase {
+    color: white   !important;
+}
+/* Estilos para la vista de tareas */
+.tasks-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-/* Responsive Design */
+.tasks-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.tasks-filters {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.search-box input {
+    padding-left: 2.5rem;
+}
+
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.task-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    border-top: 4px solid;
+}
+
+.task-card:hover {
+    transform: translateY(-5px);
+}
+
+.task-card.alta { border-color: #dc3545; }
+.task-card.media { border-color: #ffc107; }
+.task-card.baja { border-color: #0dcaf0; }
+
+.task-card-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.task-card-body {
+    padding: 1rem;
+}
+
+.task-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.task-description {
+    margin: 0.5rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.task-card-footer {
+    padding: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.task-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.task-info small {
+    color: #6c757d;
+}
+
+.task-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* Estilos para los badges */
+.badge {
+    padding: 0.5em 1em;
+    font-weight: 500;
+}
+
+.badge.bg-alta { background-color: #dc3545 !important; }
+.badge.bg-media { background-color: #ffc107 !important; }
+.badge.bg-baja { background-color: #0dcaf0 !important; }
+
+/* Estilos para la vista de proyectos */
+.projects-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.projects-header {
+    text-align: center;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.project-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.project-card.completado {
+    border-left: 5px solid #28a745;
+}
+
+.project-card.enprogreso {
+    border-left: 5px solid #ffc107;
+}
+
+.project-card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+    background: #f8f9fa;
+}
+
+.project-card-body {
+    padding: 1.5rem;
+}
+
+.project-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.project-description {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.project-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6c757d;
+}
+
+.info-item i {
+    color: #3498db;
+}
+
+.project-card-footer {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
+
+.completado .status-badge {
+    background: #28a745;
+    color: white;
+}
+
+.enprogreso .status-badge {
+    background: #ffc107;
+    color: #000;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.btn-group .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .card-body {
         padding: 1rem;
@@ -390,6 +650,22 @@ footer {
     .btn {
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
+    }
+    
+    .tasks-container {
+        padding: 1rem;
+    }
+    
+    .tasks-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .projects-container {
+        padding: 1rem;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
     }
 }
 

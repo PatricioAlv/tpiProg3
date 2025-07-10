@@ -1,0 +1,77 @@
+@model IEnumerable<TaskManager.Shared.Models.Project>
+
+<div class="projects-container">
+    <div class="projects-header">
+        <h1 class="display-4 mb-4">Proyectos</h1>
+        <p class="lead mb-4">Gestiona y organiza todos tus proyectos</p>
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#newProjectModal">
+            <i class="fas fa-plus"></i> Nuevo Proyecto
+        </button>
+    </div>
+
+    <div class="projects-grid mt-5">
+        @foreach (var project in Model)
+        {
+            <div class="project-card @project.Status.ToString().ToLower()">
+                <div class="project-card-header">
+                    <span class="status-badge">@project.Status</span>
+                </div>
+                <div class="project-card-body">
+                    <h3 class="project-title">@project.Name</h3>
+                    <p class="project-description">@project.Description</p>
+                    
+                    <div class="project-info">
+                        <div class="info-item">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>Creado: @project.CreatedAt.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="far fa-clock"></i>
+                            <span>Vence: @(project.DueDate != null ? project.DueDate.Value.ToString("dd/MM/yyyy") : "-")</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card-footer">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary" onclick="viewProject(@project.Id)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-warning" onclick="editProject(@project.Id)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="deleteProject(@project.Id)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<nav aria-label="Navegación de páginas" class="pagination-container">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+@section Scripts {
+    <script src="~/js/taskmanager.js"></script>
+}
