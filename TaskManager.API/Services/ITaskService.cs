@@ -10,6 +10,6 @@ namespace TaskManager.API.Services
         Task<TaskItemDto?> UpdateTaskAsync(int taskId, UpdateTaskItemDto updateTaskDto, int userId);
         Task<bool> DeleteTaskAsync(int taskId, int userId);
         Task<List<TaskItemDto>> GetTasksByProjectIdAsync(int projectId, int userId);
-        Task<List<TaskItemDto>> GetTasksWithPaginationAsync(int userId, int page, int pageSize);
+        Task<PagedResultDto<TaskItemDto>> GetTasksWithPaginationAsync(int userId, int page, int pageSize);
     }
 }

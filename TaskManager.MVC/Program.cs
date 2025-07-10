@@ -10,6 +10,9 @@ builder.Services.AddControllersWithViews();
 // HTTP Client
 builder.Services.AddHttpClient();
 
+// HTTP Context Accessor
+builder.Services.AddHttpContextAccessor();
+
 // Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

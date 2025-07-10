@@ -205,13 +205,17 @@ namespace TaskManager.API.Services
                 .ToListAsync();
         }
 
-        public async Task<List<TaskItemDto>> GetTasksWithPaginationAsync(int userId, int page, int pageSize)
+        public async Task<PagedResultDto<TaskItemDto>> GetTasksWithPaginationAsync(int userId, int page, int pageSize)
         {
-            return await _context.TaskItems
+            var query = _context.TaskItems
                 .Where(t => t.CreatedByUserId == userId || 
                            t.AssignedToUserId == userId ||
                            t.Project.CreatedByUserId == userId ||
-                           t.Project.TeamMembers.Any(tm => tm.Id == userId))
+                           t.Project.TeamMembers.Any(tm => tm.Id == userId));
+
+            var totalCount = await query.CountAsync();
+
+            var tasks = await query
                 .Include(t => t.Project)
                 .Include(t => t.AssignedToUser)
                 .Include(t => t.CreatedByUser)
@@ -244,6 +248,14 @@ namespace TaskManager.API.Services
                     }
                 })
                 .ToListAsync();
+
+            return new PagedResultDto<TaskItemDto>
+            {
+                Items = tasks,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
         }
     }
 }
