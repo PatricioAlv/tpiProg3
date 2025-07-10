@@ -45,14 +45,18 @@ namespace TaskManager.API.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
-            var result = await _authService.ForgotPasswordAsync(forgotPasswordDto);
-            
-            if (!result)
+            if (string.IsNullOrEmpty(forgotPasswordDto.Email))
             {
-                return BadRequest(new { message = "No se encontró un usuario con ese email" });
+                return BadRequest("El email es requerido.");
             }
 
-            return Ok(new { message = "Se ha enviado un enlace de recuperación a tu email" });
+            var result = await _authService.SendPasswordResetEmailAsync(forgotPasswordDto.Email);
+            if (!result)
+            {
+                return BadRequest("No se pudo enviar el correo de recuperación.");
+            }
+
+            return Ok("Correo de recuperación enviado exitosamente.");
         }
 
         [HttpPost("reset-password")]

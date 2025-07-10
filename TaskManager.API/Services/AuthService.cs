@@ -157,6 +157,27 @@ namespace TaskManager.API.Services
                 .ToListAsync();
         }
 
+        public async Task<bool> SendPasswordResetEmailAsync(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                return false; // Usuario no encontrado
+            }
+
+            var resetToken = Guid.NewGuid().ToString(); // Genera un token único
+            user.ResetToken = resetToken;
+            user.ResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+            await _context.SaveChangesAsync();
+
+            var resetLink = $"{_configuration["AppUrl"]}/auth/reset-password?token={resetToken}";
+
+            var emailBody = $"Haz clic en el siguiente enlace para recuperar tu contraseña: <a href='{resetLink}'>Recuperar Contraseña</a>";
+
+            // TODO: Implement email sending logic
+            return true;
+        }
+
         private string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");

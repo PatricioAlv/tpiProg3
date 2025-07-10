@@ -25,6 +25,11 @@ export const authService = {
     const response = await apiClient.get('/auth/users');
     return response.data;
   },
+
+  async sendPasswordResetEmail(email) {
+    const response = await apiClient.post('/auth/forgot-password', { email });
+    return response.data;
+  },
 };
 
 export const projectService = {
